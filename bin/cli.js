@@ -40,6 +40,7 @@ program
   .version('0.1.0')
   .description('A tool for scaffolding WordPress projects')
   .option('-n, --name <project-name>', 'Name of the WordPress project to create')
+  .option('-s, --structure <structure-type>', 'Folder structure: classic or bedrock', 'classic')
   .option('-h, --help', 'Display help information')
   .allowUnknownOption(false)
   .action(async (options) => {
@@ -50,19 +51,28 @@ program
       // Display custom formatted help
       console.log(chalk.bold('\nA tool for scaffolding WordPress projects\n'));
       console.log(chalk.bold('Options:'));
-      console.log(`  ${chalk.cyan('-V, --version')}              output the version number`);
-      console.log(`  ${chalk.cyan('-n, --name <project-name>')}  Name of the WordPress project to create`);
-      console.log(`  ${chalk.cyan('-h, --help')}                 display help for command\n`);
+      console.log(`  ${chalk.cyan('-V, --version')}                output the version number`);
+      console.log(`  ${chalk.cyan('-n, --name <project-name>')}    Name of the WordPress project to create`);
+      console.log(`  ${chalk.cyan('-s, --structure <structure>')}  Folder structure type (classic or bedrock)`);
+      console.log(`  ${chalk.cyan('-h, --help')}                   display help for command\n`);
       return;
     }
 
+    // Prepare the project config
+    const projectConfig = {
+      structure: options.structure
+    };
+
     // If project name was provided via command line, use it
     if (options.name) {
+      projectConfig.name = options.name;
       console.log(chalk.green(`\n🚀 Creating a new WordPress project: ${chalk.bold(options.name)}...\n`));
-      initializeProject(options.name);
+      initializeProject(projectConfig);
     } else {
       // Otherwise, prompt the user for project details
       try {
+        console.log(); // Add a space before questions
+
         const answers = await inquirer.prompt([
           {
             type: 'input',
@@ -74,12 +84,24 @@ program
               }
               return true;
             }
+          },
+          {
+            type: 'list',
+            name: 'structure',
+            message: '\nWhich folder structure would you like to use?',
+            choices: [
+              { name: '1. Classic WordPress structure', value: 'classic' },
+              { name: '2. Bedrock structure (modern WordPress stack)', value: 'bedrock' }
+            ],
+            default: 'classic'
           }
-          // Additional questions can be added here in the future
         ]);
         
-        console.log(chalk.green(`\n🚀 Creating a new WordPress project: ${chalk.bold(answers.projectName)}...\n`));
-        initializeProject(answers.projectName);
+        projectConfig.name = answers.projectName;
+        projectConfig.structure = answers.structure;
+        
+        console.log(chalk.green(`\n🚀 Creating a new WordPress project: ${chalk.bold(answers.projectName)} with ${chalk.bold(answers.structure)} structure...\n`));
+        initializeProject(projectConfig);
       } catch (error) {
         console.error(chalk.red('Error during project setup:'), error);
       }
@@ -87,4 +109,4 @@ program
   });
 
 // Parse arguments
-program.parse(process.argv); 
+program.parse(process.argv);
