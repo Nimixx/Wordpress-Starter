@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
-const { displayWelcome } = require('./scaffolders/common');
+const { displayWelcome, createSectionHeader, displaySuccess, displayInfo, displayWarning } = require('./scaffolders/common');
 const { createClassicStructure } = require('./scaffolders/classic');
 const { createBedrockStructure } = require('./scaffolders/bedrock');
 
@@ -19,30 +19,32 @@ async function initializeProject(config) {
   displayWelcome();
   
   // Create project directory
-  console.log(chalk.cyan(`Creating project directory: ${chalk.bold(projectName)}`));
+  createSectionHeader('Project Initialization');
+  displayInfo(`Creating project directory: ${projectName}`);
   
   try {
     const projectPath = path.join(process.cwd(), projectName);
     
     // Check if directory already exists
     if (fs.existsSync(projectPath)) {
-      console.log(chalk.red(`Error: Directory '${projectName}' already exists.`));
+      displayWarning(`Directory '${projectName}' already exists. Please choose a different name.`);
       process.exit(1);
     }
     
     // Create the directory
     fs.mkdirSync(projectPath);
-    console.log(chalk.green(`✅ Created directory: ${projectName}`));
+    console.log(chalk.green(`  ✓ Created directory: ${projectName}`));
     
     // Create the folder structure based on the selected type
     await createFolderStructure(projectPath, structureType);
     
-    console.log(chalk.green(`\n✅ Project initialized successfully!`));
-    console.log(chalk.cyan(`\nNext steps:`));
-    console.log(chalk.white(`  cd ${projectName}`));
-    console.log(chalk.white(`  # Start building your WordPress project`));
+    displaySuccess(`Project initialized successfully!`);
+    console.log(chalk.cyan.bold('\n📝 Next steps:'));
+    console.log(chalk.white(`  1. cd ${projectName}`));
+    console.log(chalk.white(`  2. Follow the instructions in the README.md file`));
+    console.log('\n');
   } catch (error) {
-    console.log(chalk.red(`Error creating project: ${error.message}`));
+    displayWarning(`Error creating project: ${error.message}`);
     process.exit(1);
   }
 }
@@ -53,14 +55,14 @@ async function initializeProject(config) {
  * @param {string} structureType - Structure type ('classic' or 'bedrock')
  */
 async function createFolderStructure(projectPath, structureType) {
-  console.log(chalk.cyan(`Setting up ${chalk.bold(structureType)} folder structure...`));
+  createSectionHeader(`Setting Up ${structureType.charAt(0).toUpperCase() + structureType.slice(1)} Structure`);
   
   if (structureType === 'classic') {
     createClassicStructure(projectPath);
   } else if (structureType === 'bedrock') {
     await createBedrockStructure(projectPath);
   } else {
-    console.log(chalk.yellow(`Warning: Unknown structure type '${structureType}', using classic structure.`));
+    displayWarning(`Unknown structure type '${structureType}', using classic structure.`);
     createClassicStructure(projectPath);
   }
 }

@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const inquirer = require('inquirer');
+const { createSectionHeader, displaySuccess, displayInfo, displayWarning, displayProcessing } = require('./common');
 
 /**
  * Create a Bedrock WordPress folder structure using Composer
@@ -14,12 +15,12 @@ async function createBedrockStructure(projectPath) {
     try {
       execSync('composer --version', { stdio: 'ignore' });
     } catch (error) {
-      console.log(chalk.yellow('Composer is not installed or not in PATH. Falling back to manual folder creation.'));
+      displayWarning('Composer is not installed or not in PATH. Falling back to manual folder creation.');
       await createBedrockStructureManually(projectPath);
       return;
     }
 
-    console.log(chalk.cyan('Using Composer to set up Bedrock...'));
+    displayInfo('Using Composer to set up Bedrock');
     
     // Get the original current directory to return to it later
     const originalDir = process.cwd();
@@ -27,7 +28,8 @@ async function createBedrockStructure(projectPath) {
     
     try {
       // Use Composer to create a new Bedrock project
-      console.log(chalk.cyan('⏳ Creating Bedrock project with Composer...'));
+      createSectionHeader('Setting up Bedrock');
+      displayProcessing('Creating Bedrock project with Composer...');
       execSync(`composer create-project roots/bedrock ${projectPath}`, { stdio: 'inherit' });
       
       // Change to the project directory
@@ -56,7 +58,7 @@ Modern WordPress stack with improved folder structure and security from Roots Be
 `;
       fs.writeFileSync(readmePath, readmeContent);
       
-      console.log(chalk.green('✅ Bedrock has been successfully set up!'));
+      displaySuccess('Bedrock has been successfully set up!');
       
       // Ask if the user wants to set up the .env file
       await setupEnvFile(projectPath);
@@ -67,8 +69,7 @@ Modern WordPress stack with improved folder structure and security from Roots Be
     }
     
   } catch (error) {
-    console.log(chalk.yellow(`Error using Composer: ${error.message}`));
-    console.log(chalk.yellow('Falling back to manual folder creation...'));
+    displayWarning(`Error using Composer: ${error.message}. Falling back to manual folder creation.`);
     await createBedrockStructureManually(projectPath);
   }
 }
@@ -78,6 +79,8 @@ Modern WordPress stack with improved folder structure and security from Roots Be
  * @param {string} projectPath - Path to the project directory
  */
 async function createBedrockStructureManually(projectPath) {
+  createSectionHeader('Creating Manual Bedrock Structure');
+  
   // Create README with bedrock structure info
   const readmePath = path.join(projectPath, 'README.md');
   fs.writeFileSync(readmePath, `# ${path.basename(projectPath)}\n\nWordPress project created with WordPress Starter using the Bedrock structure.\n\n## Structure\nModern WordPress stack with improved folder structure and security.\n`);
@@ -93,14 +96,18 @@ async function createBedrockStructureManually(projectPath) {
     path.join(projectPath, 'config', 'environments'),
   ];
   
+  displayProcessing('Creating directory structure...');
+  
   directories.forEach(dir => {
     fs.mkdirSync(dir, { recursive: true });
-    console.log(chalk.green(`✅ Created directory: ${path.relative(process.cwd(), dir)}`));
+    console.log(chalk.green(`  ✓ Created: ${path.relative(process.cwd(), dir)}`));
   });
   
   // Create a .env example file
+  displayProcessing('Creating configuration files...');
   const envPath = path.join(projectPath, '.env.example');
   fs.writeFileSync(envPath, `DB_NAME=database_name\nDB_USER=database_user\nDB_PASSWORD=database_password\n\nWP_ENV=development\nWP_HOME=http://example.com\nWP_SITEURL=\${WP_HOME}/wp\n`);
+  console.log(chalk.green('  ✓ Created: .env.example'));
   
   // Create a basic composer.json file
   const composerPath = path.join(projectPath, 'composer.json');
@@ -121,8 +128,9 @@ async function createBedrockStructureManually(projectPath) {
   }, null, 2);
   
   fs.writeFileSync(composerPath, composerContent);
+  console.log(chalk.green('  ✓ Created: composer.json'));
   
-  console.log(chalk.yellow('Note: Composer wasn\'t used. You\'ll need to manually run composer install to complete the setup.'));
+  displayWarning('Composer wasn\'t used. You\'ll need to manually run composer install to complete the setup.');
   
   // Ask if the user wants to set up the .env file
   await setupEnvFile(projectPath);
@@ -133,72 +141,82 @@ async function createBedrockStructureManually(projectPath) {
  * @param {string} projectPath - Path to the project directory
  */
 async function setupEnvFile(projectPath) {
+  createSectionHeader('Environment Configuration');
+  
   const setupEnvPrompt = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'setupEnv',
-      message: 'Would you like to set up the .env file with database credentials?',
+      message: chalk.cyan('🔧 ') + chalk.cyan.bold('Would you like to set up the .env file with database credentials?'),
       default: true
     }
   ]);
   
   if (!setupEnvPrompt.setupEnv) {
-    console.log(chalk.cyan('Skipping .env setup. You can manually configure it later.'));
+    displayInfo('Skipping .env setup. You can manually configure it later.');
     return;
   }
   
-  console.log(chalk.cyan('\n⏳ Setting up .env file...'));
+  displayProcessing('Setting up .env file...');
   
   // Check if .env.example exists
   const envExamplePath = path.join(projectPath, '.env.example');
   const envPath = path.join(projectPath, '.env');
   
   if (!fs.existsSync(envExamplePath)) {
-    console.log(chalk.yellow('Warning: .env.example file not found. Skipping .env setup.'));
+    displayWarning('.env.example file not found. Skipping .env setup.');
     return;
   }
   
   // Get database credentials from user
+  console.log(chalk.cyan.bold('\n🛢️  Database Configuration:\n'));
+  
   const dbCredentials = await inquirer.prompt([
     {
       type: 'input',
       name: 'dbName',
-      message: 'Database name:',
+      message: chalk.cyan('    ') + 'Database name:',
       default: 'wordpress'
     },
     {
       type: 'input',
       name: 'dbUser',
-      message: 'Database user:',
+      message: chalk.cyan('    ') + 'Database user:',
       default: 'root'
     },
     {
       type: 'input',
       name: 'dbPassword',
-      message: 'Database password:',
+      message: chalk.cyan('    ') + 'Database password:',
       default: ''
     },
     {
       type: 'input',
       name: 'dbHost',
-      message: 'Database host:',
+      message: chalk.cyan('    ') + 'Database host:',
       default: 'localhost'
     }
   ]);
   
   // Get site URL settings
+  console.log(chalk.cyan.bold('\n🌐 Site Configuration:\n'));
+  
   const urlSettings = await inquirer.prompt([
     {
       type: 'input',
       name: 'wpHome',
-      message: 'Site URL (WP_HOME):',
+      message: chalk.cyan('    ') + 'Site URL (WP_HOME):',
       default: 'http://localhost:8000'
     },
     {
       type: 'list',
       name: 'wpEnv',
-      message: 'Environment:',
-      choices: ['development', 'staging', 'production'],
+      message: chalk.cyan('    ') + 'Environment:',
+      choices: [
+        { name: '🛠️  Development', value: 'development' },
+        { name: '🔍 Staging', value: 'staging' },
+        { name: '🚀 Production', value: 'production' }
+      ],
       default: 'development'
     }
   ]);
@@ -232,7 +250,7 @@ async function setupEnvFile(projectPath) {
   // Write the .env file
   fs.writeFileSync(envPath, envContent);
   
-  console.log(chalk.green('✅ .env file has been set up with your database credentials and site settings!'));
+  displaySuccess('.env file has been set up with your database credentials and site settings!');
 }
 
 module.exports = {

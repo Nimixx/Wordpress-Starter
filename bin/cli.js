@@ -10,7 +10,7 @@ const { displayWelcome } = require('../src/scaffolders/common');
 
 // Function to display the header
 function displayHeader() {
-  // Display a colorful header using figlet
+  console.log('\n');
   console.log(
     chalk.cyan(
       figlet.textSync('WordPress Starter', { 
@@ -20,20 +20,26 @@ function displayHeader() {
       })
     )
   );
+  console.log('\n');
 
   // Display a description box
   console.log(
     boxen(
-      chalk.white.bold('A modern WordPress project scaffolding tool\n') +
-      chalk.white('Easily setup WordPress projects with custom configurations'),
+      chalk.white.bold('A modern WordPress project scaffolding tool\n\n') +
+      chalk.white('Easily setup WordPress projects with custom configurations') + 
+      chalk.cyan('\n\nVersion: 0.1.0'),
       {
         padding: 1,
         margin: 1,
         borderStyle: 'round',
-        borderColor: 'cyan'
+        borderColor: 'cyan',
+        backgroundColor: '#222',
+        float: 'center'
       }
     )
   );
+  
+  console.log('\n');
 }
 
 // Set up CLI commands with optional project name
@@ -51,11 +57,26 @@ program
     if (options.help) {
       // Display custom formatted help
       console.log(chalk.bold('\nA tool for scaffolding WordPress projects\n'));
-      console.log(chalk.bold('Options:'));
-      console.log(`  ${chalk.cyan('-V, --version')}                output the version number`);
-      console.log(`  ${chalk.cyan('-n, --name <project-name>')}    Name of the WordPress project to create`);
-      console.log(`  ${chalk.cyan('-s, --structure <structure>')}  Folder structure type (classic or bedrock)`);
-      console.log(`  ${chalk.cyan('-h, --help')}                   display help for command\n`);
+      
+      const helpBox = boxen(
+        chalk.bold.white('USAGE\n\n') +
+        chalk.white('  npx create-wordpress-starter [options]\n\n') +
+        chalk.bold.white('OPTIONS\n\n') +
+        chalk.cyan('  -V, --version                ') + chalk.white('output the version number\n') +
+        chalk.cyan('  -n, --name <project-name>    ') + chalk.white('Name of the WordPress project to create\n') +
+        chalk.cyan('  -s, --structure <structure>  ') + chalk.white('Folder structure type (classic or bedrock)\n') +
+        chalk.cyan('  -h, --help                   ') + chalk.white('display help for command'),
+        {
+          padding: 1,
+          margin: 1,
+          borderStyle: 'round',
+          borderColor: 'white',
+          float: 'center'
+        }
+      );
+      
+      console.log(helpBox);
+      console.log('\n');
       return;
     }
 
@@ -67,7 +88,7 @@ program
     // If project name was provided via command line, use it
     if (options.name) {
       projectConfig.name = options.name;
-      console.log(chalk.green(`\n🚀 Creating a new WordPress project: ${chalk.bold(options.name)}...\n`));
+      console.log(chalk.green.bold(`\n🚀 Creating a new WordPress project: ${chalk.bold(options.name)}...\n`));
       await initializeProject(projectConfig);
     } else {
       // Otherwise, prompt the user for project details
@@ -78,7 +99,7 @@ program
           {
             type: 'input',
             name: 'projectName',
-            message: 'What is the name of your WordPress project?',
+            message: chalk.cyan('📂 ') + chalk.cyan.bold('What is the name of your WordPress project?'),
             validate: (input) => {
               if (input.trim().length === 0) {
                 return 'Project name cannot be empty';
@@ -89,10 +110,16 @@ program
           {
             type: 'list',
             name: 'structure',
-            message: '\nWhich folder structure would you like to use?',
+            message: chalk.cyan('🏗️  ') + chalk.cyan.bold('Which folder structure would you like to use?'),
             choices: [
-              { name: '1. Classic WordPress structure', value: 'classic' },
-              { name: '2. Bedrock structure (modern WordPress stack)', value: 'bedrock' }
+              { 
+                name: chalk.blue.bold('1. Classic WordPress') + chalk.white(' - Traditional WordPress setup'),
+                value: 'classic' 
+              },
+              { 
+                name: chalk.magenta.bold('2. Bedrock') + chalk.white(' - Modern WordPress stack with improved security'),
+                value: 'bedrock' 
+              }
             ],
             default: 'classic'
           }
@@ -101,10 +128,10 @@ program
         projectConfig.name = answers.projectName;
         projectConfig.structure = answers.structure;
         
-        console.log(chalk.green(`\n🚀 Creating a new WordPress project: ${chalk.bold(answers.projectName)} with ${chalk.bold(answers.structure)} structure...\n`));
+        console.log(chalk.green.bold(`\n🚀 Creating a new WordPress project: ${chalk.bold(answers.projectName)} with ${chalk.bold(answers.structure)} structure...\n`));
         await initializeProject(projectConfig);
       } catch (error) {
-        console.error(chalk.red('Error during project setup:'), error);
+        console.error(chalk.red(`\n❌ Error during project setup: ${error.message}\n`));
       }
     }
   });
