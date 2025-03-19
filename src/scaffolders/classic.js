@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const boxen = require('boxen');
 const { createSectionHeader, displaySuccess, displayInfo, displayWarning, displayProcessing } = require('./common');
 
 // Catppuccin Mocha Theme Colors
@@ -25,10 +26,41 @@ const catppuccin = {
 };
 
 /**
+ * Display Classic WordPress information box
+ */
+function displayClassicInfo() {
+  console.log('\n');
+  
+  const classicBox = boxen(
+    chalk.hex(catppuccin.text).bold('Classic WordPress Structure\n\n') +
+    chalk.hex(catppuccin.text)('The Classic WordPress setup provides a traditional WordPress installation with standard folder organization. This structure is familiar to most WordPress developers and offers:\n\n') +
+    chalk.hex(catppuccin.blue)('• ') + chalk.hex(catppuccin.text)('Standard WordPress core files\n') +
+    chalk.hex(catppuccin.blue)('• ') + chalk.hex(catppuccin.text)('Traditional wp-content folder structure\n') +
+    chalk.hex(catppuccin.blue)('• ') + chalk.hex(catppuccin.text)('Standard wp-config.php configuration\n') +
+    chalk.hex(catppuccin.blue)('• ') + chalk.hex(catppuccin.text)('Compatibility with most WordPress plugins and themes\n') +
+    chalk.hex(catppuccin.blue)('• ') + chalk.hex(catppuccin.text)('Familiar environment for WordPress developers'),
+    {
+      padding: 1,
+      margin: { top: 0, bottom: 1, left: 0, right: 0 },
+      borderStyle: 'round',
+      borderColor: catppuccin.blue,
+      backgroundColor: catppuccin.background,
+      float: 'left'
+    }
+  );
+  
+  console.log(classicBox);
+  console.log('\n');
+}
+
+/**
  * Create a classic WordPress folder structure using WP-CLI
  * @param {string} projectPath - Path to the project directory
  */
 function createClassicStructure(projectPath) {
+  // Display Classic information
+  displayClassicInfo();
+  
   try {
     // Check if WP-CLI is installed
     try {

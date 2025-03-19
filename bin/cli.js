@@ -28,6 +28,55 @@ const catppuccin = {
   lavender: '#b4befe'
 };
 
+// Description data for WordPress structures
+const structureDescriptions = {
+  classic: {
+    title: 'Classic WordPress Structure',
+    description: [
+      '• Traditional WordPress setup with wp-content directory',
+      '• Straightforward deployment process',
+      '• Familiar structure for WordPress developers',
+      '• Easy integration with standard WordPress themes and plugins',
+      '• Suitable for simple WordPress sites'
+    ],
+    color: catppuccin.blue
+  },
+  bedrock: {
+    title: 'Bedrock WordPress Structure',
+    description: [
+      '• Modern WordPress stack with improved security and dependency management',
+      '• Uses Composer for managing WordPress core and plugins',
+      '• Improved directory structure separating web roots from project',
+      '• Better environment-specific configuration',
+      '• Recommended for larger or team-based WordPress projects'
+    ],
+    color: catppuccin.mauve
+  }
+};
+
+// Function to display a structure description box
+function displayStructureDescription(structure) {
+  const structureInfo = structureDescriptions[structure];
+  
+  console.log(
+    boxen(
+      chalk.hex(structureInfo.color).bold(`${structureInfo.title}\n\n`) +
+      chalk.hex(catppuccin.text)(structureInfo.description.join('\n')),
+      {
+        padding: 1,
+        margin: { top: 1, bottom: 1, left: 0, right: 0 },
+        borderStyle: 'round',
+        borderColor: structureInfo.color,
+        backgroundColor: catppuccin.background,
+        width: 70,
+        float: 'left'
+      }
+    )
+  );
+  
+  console.log('\n');
+}
+
 // Function to display the header
 function displayHeader() {
   console.log('\n');
@@ -109,14 +158,36 @@ program
     // If project name was provided via command line, use it
     if (options.name) {
       projectConfig.name = options.name;
-      console.log(chalk.hex(catppuccin.green).bold(`\n🚀 Creating a new WordPress project: ${chalk.hex(catppuccin.text).bold(options.name)}...\n`));
-      await initializeProject(projectConfig);
+      
+      // Show selected structure description
+      displayStructureDescription(options.structure);
+      
+      // Add confirmation if command-line options were provided
+      const confirmPrompt = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'proceed',
+          message: chalk.hex(catppuccin.yellow)('🔍 ') + 
+                   chalk.hex(catppuccin.yellow).bold(`Confirm creating project "${options.name}" with ${options.structure} structure?`),
+          default: true
+        }
+      ]);
+      
+      if (confirmPrompt.proceed) {
+        console.log(chalk.hex(catppuccin.green).bold(`\n🚀 Creating a new WordPress project: ${chalk.hex(catppuccin.text).bold(options.name)}...\n`));
+        await initializeProject(projectConfig);
+      } else {
+        console.log(chalk.hex(catppuccin.yellow)(`\n⏸️  Project creation cancelled.\n`));
+      }
     } else {
       // Otherwise, prompt the user for project details
       try {
-        console.log(); // Add a space before questions
-
-        const answers = await inquirer.prompt([
+        // Store project name to avoid asking for it again when going back
+        let projectName = '';
+        let shouldContinue = false;
+        
+        // First get the project name
+        const nameAnswer = await inquirer.prompt([
           {
             type: 'input',
             name: 'projectName',
@@ -127,30 +198,60 @@ program
               }
               return true;
             }
-          },
-          {
-            type: 'list',
-            name: 'structure',
-            message: chalk.hex(catppuccin.sapphire)('🏗️  ') + chalk.hex(catppuccin.sapphire).bold('Which folder structure would you like to use?'),
-            choices: [
-              { 
-                name: chalk.hex(catppuccin.blue).bold('1. Classic WordPress') + chalk.hex(catppuccin.text)(' - Traditional WordPress setup'),
-                value: 'classic' 
-              },
-              { 
-                name: chalk.hex(catppuccin.mauve).bold('2. Bedrock') + chalk.hex(catppuccin.text)(' - Modern WordPress stack with improved security'),
-                value: 'bedrock' 
-              }
-            ],
-            default: 'classic'
           }
         ]);
         
-        projectConfig.name = answers.projectName;
-        projectConfig.structure = answers.structure;
+        projectName = nameAnswer.projectName;
         
-        console.log(chalk.hex(catppuccin.green).bold(`\n🚀 Creating a new WordPress project: ${chalk.hex(catppuccin.text).bold(answers.projectName)} with ${chalk.hex(catppuccin.text).bold(answers.structure)} structure...\n`));
-        await initializeProject(projectConfig);
+        while (!shouldContinue) {
+          console.log(); // Add a space before questions
+
+          // Now ask for structure
+          const structureAnswer = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'structure',
+              message: chalk.hex(catppuccin.sapphire)('🏗️  ') + chalk.hex(catppuccin.sapphire).bold('Which folder structure would you like to use?'),
+              choices: [
+                { 
+                  name: chalk.hex(catppuccin.blue).bold('1. Classic WordPress') + chalk.hex(catppuccin.text)(' - Traditional WordPress setup'),
+                  value: 'classic' 
+                },
+                { 
+                  name: chalk.hex(catppuccin.mauve).bold('2. Bedrock') + chalk.hex(catppuccin.text)(' - Modern WordPress stack with improved security'),
+                  value: 'bedrock' 
+                }
+              ],
+              default: 'classic'
+            }
+          ]);
+          
+          // Display selected structure description
+          displayStructureDescription(structureAnswer.structure);
+          
+          // Add confirmation prompt
+          const confirmPrompt = await inquirer.prompt([
+            {
+              type: 'confirm',
+              name: 'proceed',
+              message: chalk.hex(catppuccin.yellow)('🔍 ') + 
+                       chalk.hex(catppuccin.yellow).bold(`Confirm creating project "${projectName}" with ${structureAnswer.structure} structure?`),
+              default: true
+            }
+          ]);
+          
+          if (confirmPrompt.proceed) {
+            projectConfig.name = projectName;
+            projectConfig.structure = structureAnswer.structure;
+            shouldContinue = true;
+            
+            console.log(chalk.hex(catppuccin.green).bold(`\n🚀 Creating a new WordPress project: ${chalk.hex(catppuccin.text).bold(projectName)} with ${chalk.hex(catppuccin.text).bold(structureAnswer.structure)} structure...\n`));
+            await initializeProject(projectConfig);
+          } else {
+            console.log(chalk.hex(catppuccin.yellow)(`\n⏪ Going back to folder structure selection...\n`));
+            // Loop continues if not confirmed but keeps same project name
+          }
+        }
       } catch (error) {
         console.error(chalk.hex(catppuccin.red)(`\n❌ Error during project setup: ${error.message}\n`));
       }

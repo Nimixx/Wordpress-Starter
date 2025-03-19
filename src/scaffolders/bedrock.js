@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const inquirer = require('inquirer');
+const boxen = require('boxen');
 const { createSectionHeader, displaySuccess, displayInfo, displayWarning, displayProcessing } = require('./common');
 
 // Catppuccin Mocha Theme Colors
@@ -26,10 +27,43 @@ const catppuccin = {
 };
 
 /**
+ * Display Bedrock information box
+ */
+function displayBedrockInfo() {
+  console.log('\n');
+  
+  const bedrockBox = boxen(
+    chalk.hex(catppuccin.text).bold('Bedrock WordPress Structure\n\n') +
+    chalk.hex(catppuccin.text)('Bedrock is a modern WordPress stack that helps you get started with the best tools and project structure for WordPress development. Bedrock includes the following features:\n\n') +
+    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Improved folder structure for better organization\n') +
+    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Dependency management with Composer\n') +
+    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Environment variables with dotenv\n') +
+    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Enhanced security practices\n') +
+    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Better WordPress configuration for multiple environments\n') +
+    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('WP directory installed in a subdirectory (wp/)\n') +
+    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Improved WordPress configuration for scalability'),
+    {
+      padding: 1,
+      margin: { top: 0, bottom: 1, left: 0, right: 0 },
+      borderStyle: 'round',
+      borderColor: catppuccin.mauve,
+      backgroundColor: catppuccin.background,
+      float: 'left'
+    }
+  );
+  
+  console.log(bedrockBox);
+  console.log('\n');
+}
+
+/**
  * Create a Bedrock WordPress folder structure using Composer
  * @param {string} projectPath - Path to the project directory
  */
 async function createBedrockStructure(projectPath) {
+  // Display Bedrock information
+  displayBedrockInfo();
+  
   try {
     // Check if Composer is installed
     try {
