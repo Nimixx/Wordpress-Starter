@@ -7,7 +7,7 @@ const path = require('path');
 // Mock dependencies before requiring Project
 const mockGetDefaultName = jest.fn().mockReturnValue('classic');
 const mockCreate = jest.fn().mockReturnValue({
-  generate: jest.fn().mockResolvedValue()
+  generate: jest.fn().mockResolvedValue(),
 });
 const mockDisplayWelcome = jest.fn();
 const mockDisplayWarning = jest.fn();
@@ -19,26 +19,26 @@ jest.mock('../../src/utils/ui', () => ({
   displayWelcome: mockDisplayWelcome,
   createSectionHeader: jest.fn(),
   displayInfo: jest.fn(),
-  displayWarning: mockDisplayWarning
+  displayWarning: mockDisplayWarning,
 }));
 
 // Mock structure registry
 jest.mock('../../src/structures', () => ({
   getDefaultName: mockGetDefaultName,
   create: mockCreate,
-  register: jest.fn()
+  register: jest.fn(),
 }));
 
 // Mock path module
 jest.mock('path', () => ({
   join: jest.fn().mockImplementation((...args) => args.join('/')),
-  basename: jest.fn().mockReturnValue('test-project')
+  basename: jest.fn().mockReturnValue('test-project'),
 }));
 
 // Mock fs module
 jest.mock('fs', () => ({
   existsSync: mockExistsSync,
-  mkdirSync: mockMkdirSync
+  mkdirSync: mockMkdirSync,
 }));
 
 // Mock process.exit
@@ -103,7 +103,7 @@ describe('Project', () => {
     try {
       await project.initialize();
       // If we get here, the test fails
-      fail('Expected process.exit to be called');
+      throw new Error('Expected process.exit to be called but it was not');
     } catch (error) {
       if (error.message !== 'PROCESS_EXIT') {
         throw error; // Re-throw if it's not our mock exit
@@ -111,7 +111,7 @@ describe('Project', () => {
       
       // Should have displayed warning
       expect(mockDisplayWarning).toHaveBeenCalledWith(
-        expect.stringContaining('already exists')
+        expect.stringContaining('already exists'),
       );
       
       // Should have exited
@@ -135,7 +135,7 @@ describe('Project', () => {
     try {
       await project.initialize();
       // If we get here, the test fails
-      fail('Expected process.exit to be called');
+      throw new Error('Expected process.exit to be called but it was not');
     } catch (error) {
       if (error.message !== 'PROCESS_EXIT') {
         throw error; // Re-throw if it's not our mock exit
@@ -143,7 +143,7 @@ describe('Project', () => {
       
       // Should have displayed warning
       expect(mockDisplayWarning).toHaveBeenCalledWith(
-        expect.stringContaining('Error creating project')
+        expect.stringContaining('Error creating project'),
       );
       
       // Should have exited

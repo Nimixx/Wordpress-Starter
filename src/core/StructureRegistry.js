@@ -9,16 +9,19 @@ class StructureRegistry {
   }
 
   /**
-   * Register a new structure type
-   * @param {string} name - Structure name
-   * @param {Class} StructureClass - Structure generator class
-   * @param {Object} options - Structure options
-   * @param {boolean} options.isDefault - Whether this is the default structure
+   * Register a new structure
+   * @param {string} name - The name of the structure
+   * @param {Structure} StructureClass - The structure class
+   * @param {object} options - Registration options
+   * @param {boolean} options.isDefault - Whether this structure should be the default
+   * @returns {boolean} - Whether registration was successful
    */
   register(name, StructureClass, { isDefault = false } = {}) {
+    // eslint-disable-next-line no-param-reassign
     this.structures.set(name, StructureClass);
     
     if (isDefault || !this.defaultStructure) {
+      // eslint-disable-next-line no-param-reassign
       this.defaultStructure = name;
     }
   }
@@ -64,13 +67,15 @@ class StructureRegistry {
    * @returns {Object} Structure generator instance
    */
   create(name, projectPath) {
-    if (!this.has(name)) {
+    let structureName = name;
+    
+    if (!this.has(structureName)) {
       const defaultName = this.getDefaultName();
-      console.warn(`Structure "${name}" not found, using "${defaultName}" instead.`);
-      name = defaultName;
+      console.warn(`Structure "${structureName}" not found, using "${defaultName}" instead.`);
+      structureName = defaultName;
     }
 
-    const StructureClass = this.get(name);
+    const StructureClass = this.get(structureName);
     return new StructureClass(projectPath);
   }
 }

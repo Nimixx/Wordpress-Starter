@@ -11,7 +11,7 @@ const ui = require('../../src/utils/ui');
 
 // Create mock for execSync - must be before requiring the module
 jest.mock('child_process', () => ({
-  execSync: jest.fn()
+  execSync: jest.fn(),
 }));
 
 // Access the mock after mocking
@@ -43,7 +43,7 @@ jest.mock('../../src/utils/ui', () => ({
 
 // Mock chalk to prevent color issues in tests
 jest.mock('chalk', () => ({
-  hex: jest.fn().mockReturnValue(jest.fn((text) => text))
+  hex: jest.fn().mockReturnValue(jest.fn((text) => text)),
 }));
 
 // Mock the catppuccin color palette
@@ -53,11 +53,11 @@ jest.mock('../../src/config/theme', () => ({
     blue: '#0000ff',
     yellow: '#ffff00',
     mauve: '#d0a9e4',
-    text: '#CDD6F4'
+    text: '#CDD6F4',
   },
   boxStyles: {
-    nextSteps: {}
-  }
+    nextSteps: {},
+  },
 }));
 
 // Mock console.log
@@ -79,16 +79,16 @@ describe('ClassicStructure', () => {
     
     // Mock the writeProjectFile method to avoid actual file operations
     jest.spyOn(classicStructure, 'writeProjectFile').mockImplementation(
-      (path, content) => ({ path, content })
+      (path, content) => ({ path, content }),
     );
     
     // Mock the actual implementation of these methods
     jest.spyOn(classicStructure, 'generateManually').mockImplementation(
-      () => Promise.resolve()
+      () => Promise.resolve(),
     );
     
     jest.spyOn(classicStructure, 'generateWithWpCli').mockImplementation(
-      () => Promise.resolve()
+      () => Promise.resolve(),
     );
     
     // Just spy on these methods
@@ -206,7 +206,7 @@ describe('ClassicStructure', () => {
       // Test the writeProjectFile call without actually creating files
       this.writeProjectFile(
         'index.php', 
-        `<?php\n// Silence is golden.\n// This is a placeholder for the WordPress installation.\n`
+        `<?php\n// Silence is golden.\n// This is a placeholder for the WordPress installation.\n`,
       );
       
       // Mock directory creation using our mocked fs
@@ -226,7 +226,7 @@ describe('ClassicStructure', () => {
     // Check that the right files would be created
     expect(classicStructure.writeProjectFile).toHaveBeenCalledWith(
       'index.php',
-      expect.stringContaining('Silence is golden')
+      expect.stringContaining('Silence is golden'),
     );
     
     // Check that the directory creation was called

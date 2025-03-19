@@ -23,7 +23,7 @@ class ClassicStructure extends Structure {
       '• Standard wp-config.php configuration\n' +
       '• Compatibility with most WordPress plugins and themes\n' +
       '• Familiar environment for WordPress developers',
-      catppuccin.blue
+      catppuccin.blue,
     );
   }
 
@@ -109,7 +109,7 @@ class ClassicStructure extends Structure {
       'wp-content/uploads',
     ];
     
-    directories.forEach(dir => {
+    directories.forEach((dir) => {
       fs.mkdirSync(path.join(this.projectPath, dir), { recursive: true });
     });
     
@@ -117,7 +117,7 @@ class ClassicStructure extends Structure {
     displayProcessing('Creating placeholder files...');
     this.writeProjectFile(
       'index.php', 
-      `<?php\n// Silence is golden.\n// This is a placeholder for the WordPress installation.\n`
+      `<?php\n// Silence is golden.\n// This is a placeholder for the WordPress installation.\n`,
     );
     
     console.log('\n');

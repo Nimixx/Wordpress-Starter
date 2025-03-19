@@ -23,7 +23,7 @@ const catppuccin = {
   sky: '#89dceb',
   sapphire: '#74c7ec',
   blue: '#89b4fa',
-  lavender: '#b4befe'
+  lavender: '#b4befe',
 };
 
 /**
@@ -47,8 +47,8 @@ function displayBedrockInfo() {
       margin: 0,
       borderStyle: 'round',
       borderColor: catppuccin.mauve,
-      float: 'left'
-    }
+      float: 'left',
+    },
   );
   
   console.log(bedrockBox);
@@ -151,7 +151,7 @@ async function createBedrockStructureManually(projectPath) {
   
   displayProcessing('Creating directory structure...');
   
-  directories.forEach(dir => {
+  directories.forEach((dir) => {
     fs.mkdirSync(dir, { recursive: true });
     console.log(chalk.hex(catppuccin.green)(`  ✓ Created: ${path.relative(process.cwd(), dir)}`));
   });
@@ -171,13 +171,13 @@ async function createBedrockStructureManually(projectPath) {
     require: {
       "php": ">=7.4",
       "composer/installers": "^2.0",
-      "roots/wordpress": "^6.0"
+      "roots/wordpress": "^6.0",
     },
     config: {
       "allow-plugins": {
-        "composer/installers": true
-      }
-    }
+        "composer/installers": true,
+      },
+    },
   }, null, 2);
   
   fs.writeFileSync(composerPath, composerContent);
@@ -201,8 +201,8 @@ async function setupEnvFile(projectPath) {
       type: 'confirm',
       name: 'setupEnv',
       message: chalk.hex(catppuccin.sapphire)('🔧 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to set up the .env file with database credentials?'),
-      default: true
-    }
+      default: true,
+    },
   ]);
   
   if (!setupEnvPrompt.setupEnv) {
@@ -233,26 +233,26 @@ async function setupEnvFile(projectPath) {
       type: 'input',
       name: 'dbName',
       message: chalk.hex(catppuccin.sapphire)('    ') + 'Database name:',
-      default: 'wordpress'
+      default: 'wordpress',
     },
     {
       type: 'input',
       name: 'dbUser',
       message: chalk.hex(catppuccin.sapphire)('    ') + 'Database user:',
-      default: 'root'
+      default: 'root',
     },
     {
       type: 'input',
       name: 'dbPassword',
       message: chalk.hex(catppuccin.sapphire)('    ') + 'Database password:',
-      default: ''
+      default: '',
     },
     {
       type: 'input',
       name: 'dbHost',
       message: chalk.hex(catppuccin.sapphire)('    ') + 'Database host:',
-      default: 'localhost'
-    }
+      default: 'localhost',
+    },
   ]);
   
   // Get site URL settings
@@ -263,7 +263,7 @@ async function setupEnvFile(projectPath) {
       type: 'input',
       name: 'wpHome',
       message: chalk.hex(catppuccin.sapphire)('    ') + 'Site URL (WP_HOME):',
-      default: 'http://localhost:8000'
+      default: 'http://localhost:8000',
     },
     {
       type: 'list',
@@ -272,10 +272,10 @@ async function setupEnvFile(projectPath) {
       choices: [
         { name: '🛠️  Development', value: 'development' },
         { name: '🔍 Staging', value: 'staging' },
-        { name: '🚀 Production', value: 'production' }
+        { name: '🚀 Production', value: 'production' },
       ],
-      default: 'development'
-    }
+      default: 'development',
+    },
   ]);
   
   // Read the .env.example file
@@ -344,8 +344,8 @@ async function setupBladeIcons(projectPath) {
         type: 'confirm',
         name: 'addIcons',
         message: chalk.hex(catppuccin.sapphire)('🎨 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to add Blade icons to your project?'),
-        default: true
-      }
+        default: true,
+      },
     ]);
     
     if (!addIconsPrompt.addIcons) {
@@ -365,10 +365,10 @@ async function setupBladeIcons(projectPath) {
           { name: '🔶 Heroicons', value: 'heroicons' },
           { name: '💠 Fontawesome', value: 'fontawesome' },
           { name: '🔘 Boxicons', value: 'boxicons' },
-          { name: '⚪ None/Skip', value: 'none' }
+          { name: '⚪ None/Skip', value: 'none' },
         ],
-        default: 'lucide'
-      }
+        default: 'lucide',
+      },
     ]);
     
     if (iconPackagePrompt.iconPackage === 'none') {
@@ -414,7 +414,7 @@ function getIconPackageName(packageKey) {
     'lucide': 'Lucide',
     'heroicons': 'Heroicons',
     'fontawesome': 'Font Awesome',
-    'boxicons': 'Boxicons'
+    'boxicons': 'Boxicons',
   };
   
   return packageNames[packageKey] || packageKey;
@@ -430,7 +430,7 @@ function getComposerCommand(packageKey) {
     'lucide': 'composer require mallardduck/blade-lucide-icons',
     'heroicons': 'composer require blade-ui-kit/blade-heroicons',
     'fontawesome': 'composer require owenvoke/blade-fontawesome',
-    'boxicons': 'composer require andreiio/blade-boxicons'
+    'boxicons': 'composer require andreiio/blade-boxicons',
   };
   
   return commands[packageKey] || '';
@@ -459,13 +459,13 @@ function displayProjectCompletion(projectPath) {
       borderStyle: 'round',
       borderColor: catppuccin.yellow,
       width: 52,
-      float: 'left'
-    })
+      float: 'left',
+    }),
   );
   
   console.log('\n');
 }
 
 module.exports = {
-  createBedrockStructure
+  createBedrockStructure,
 }; 

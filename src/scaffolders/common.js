@@ -18,7 +18,7 @@ const catppuccin = {
   sky: '#89dceb',
   sapphire: '#74c7ec',
   blue: '#89b4fa',
-  lavender: '#b4befe'
+  lavender: '#b4befe',
 };
 
 /**
@@ -42,8 +42,8 @@ function displayWelcome() {
       borderStyle: 'round',
       borderColor: catppuccin.green,
       float: 'left',
-      backgroundColor: catppuccin.background
-    }
+      backgroundColor: catppuccin.background,
+    },
   );
   
   console.log(welcomeBox);
@@ -100,5 +100,5 @@ module.exports = {
   displaySuccess,
   displayInfo,
   displayWarning,
-  displayProcessing
+  displayProcessing,
 }; 

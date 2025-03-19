@@ -20,9 +20,9 @@ function displayHeader() {
       figlet.textSync('WordPress Starter', { 
         font: 'Standard',
         horizontalLayout: 'default',
-        verticalLayout: 'default'
-      })
-    )
+        verticalLayout: 'default',
+      }),
+    ),
   );
   console.log('\n');
 
@@ -32,8 +32,8 @@ function displayHeader() {
       chalk.hex(catppuccin.text).bold('A modern WordPress project scaffolding tool\n\n') +
       chalk.hex(catppuccin.text)('Easily setup WordPress projects with custom configurations') + 
       chalk.hex(catppuccin.lavender)('\n\nVersion: 0.1.0'),
-      boxStyles.default
-    )
+      boxStyles.default,
+    ),
   );
   
   console.log('\n');
@@ -56,9 +56,9 @@ function displayStructureDescription(structure) {
         borderStyle: 'round',
         borderColor: structureInfo.color,
         width: 70,
-        float: 'left'
-      }
-    )
+        float: 'left',
+      },
+    ),
   );
   
   console.log('\n');
@@ -88,7 +88,7 @@ program
         chalk.hex(catppuccin.blue)('  -n, --name <project-name>    ') + chalk.hex(catppuccin.text)('Name of the WordPress project to create\n') +
         chalk.hex(catppuccin.blue)('  -s, --structure <structure>  ') + chalk.hex(catppuccin.text)(`Folder structure type (${structureRegistry.getNames().join(' or ')})\n`) +
         chalk.hex(catppuccin.blue)('  -h, --help                   ') + chalk.hex(catppuccin.text)('display help for command'),
-        boxStyles.help
+        boxStyles.help,
       );
       
       console.log(helpBox);
@@ -98,7 +98,7 @@ program
 
     // Prepare the project config
     const projectConfig = {
-      structure: options.structure
+      structure: options.structure,
     };
 
     // If project name was provided via command line, use it
@@ -115,8 +115,8 @@ program
           name: 'proceed',
           message: chalk.hex(catppuccin.yellow)('🔍 ') + 
                    chalk.hex(catppuccin.yellow).bold(`Confirm creating project "${options.name}" with ${options.structure} structure?`),
-          default: true
-        }
+          default: true,
+        },
       ]);
       
       if (confirmPrompt.proceed) {
@@ -143,8 +143,8 @@ program
                 return 'Project name cannot be empty';
               }
               return true;
-            }
-          }
+            },
+          },
         ]);
         
         projectName = nameAnswer.projectName;
@@ -161,15 +161,15 @@ program
               choices: [
                 { 
                   name: chalk.hex(catppuccin.blue).bold('1. Classic WordPress') + chalk.hex(catppuccin.text)(' - Traditional WordPress setup'),
-                  value: 'classic' 
+                  value: 'classic', 
                 },
                 { 
                   name: chalk.hex(catppuccin.mauve).bold('2. Bedrock') + chalk.hex(catppuccin.text)(' - Modern WordPress stack with improved security'),
-                  value: 'bedrock' 
-                }
+                  value: 'bedrock', 
+                },
               ],
-              default: structureRegistry.getDefaultName()
-            }
+              default: structureRegistry.getDefaultName(),
+            },
           ]);
           
           // Display selected structure description
@@ -182,8 +182,8 @@ program
               name: 'proceed',
               message: chalk.hex(catppuccin.yellow)('🔍 ') + 
                        chalk.hex(catppuccin.yellow).bold(`Confirm creating project "${projectName}" with ${structureAnswer.structure} structure?`),
-              default: true
-            }
+              default: true,
+            },
           ]);
           
           if (confirmPrompt.proceed) {

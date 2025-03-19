@@ -7,7 +7,7 @@ jest.mock('../src/core/Project', () => {
   const mockInitialize = jest.fn().mockResolvedValue();
   const ProjectMock = jest.fn().mockImplementation(() => {
     return {
-      initialize: mockInitialize
+      initialize: mockInitialize,
     };
   });
   
@@ -19,12 +19,12 @@ jest.mock('../src/core/Project', () => {
 
 // Mock path and fs
 jest.mock('path', () => ({
-  join: jest.fn().mockImplementation((...args) => args.join('/'))
+  join: jest.fn().mockImplementation((...args) => args.join('/')),
 }));
 
 jest.mock('fs', () => ({
   existsSync: jest.fn().mockReturnValue(false),
-  mkdirSync: jest.fn()
+  mkdirSync: jest.fn(),
 }));
 
 // Mock UI utils
@@ -33,7 +33,7 @@ jest.mock('../src/utils/ui', () => ({
   displayStructureDescription: jest.fn(),
   createSectionHeader: jest.fn(),
   displayInfo: jest.fn(),
-  displayWarning: jest.fn()
+  displayWarning: jest.fn(),
 }));
 
 // Import the module to test
@@ -62,7 +62,7 @@ describe('CLI Functionality Tests', () => {
       // Arrange
       const config = {
         name: 'test-project',
-        structure: 'classic'
+        structure: 'classic',
       };
       
       // Act
@@ -77,7 +77,7 @@ describe('CLI Functionality Tests', () => {
       // Arrange
       const config = {
         name: 'test-project',
-        structure: 'bedrock'
+        structure: 'bedrock',
       };
       
       // Act
@@ -92,7 +92,7 @@ describe('CLI Functionality Tests', () => {
       // Arrange
       const config = {
         name: 'test-project',
-        structure: 'custom-structure'
+        structure: 'custom-structure',
       };
       
       // Act
@@ -100,7 +100,7 @@ describe('CLI Functionality Tests', () => {
       
       // Assert
       expect(Project).toHaveBeenCalledWith(expect.objectContaining({ 
-        structure: 'custom-structure' 
+        structure: 'custom-structure', 
       }));
     });
   });
@@ -112,7 +112,7 @@ describe('CLI Functionality Tests', () => {
         exec: jest.fn((cmd, cb) => {
           cb(null, { stdout: 'Success' });
           return { kill: jest.fn() };
-        })
+        }),
       }));
       
       // Reimport exec with our mock

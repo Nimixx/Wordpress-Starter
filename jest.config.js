@@ -10,7 +10,7 @@ module.exports = {
     "src/**/*.js",
     "bin/**/*.js",
     "!**/node_modules/**",
-    "!**/coverage/**"
+    "!**/coverage/**",
   ],
   
   // The test environment that will be used for testing
@@ -18,12 +18,12 @@ module.exports = {
   
   // The glob patterns Jest uses to detect test files
   testMatch: [
-    "**/test/**/*.test.js"
+    "**/test/**/*.test.js",
   ],
   
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
-    "/node_modules/"
+    "/node_modules/",
   ],
   
   // A map from regular expressions to paths to transformers
@@ -34,6 +34,6 @@ module.exports = {
   
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    "/node_modules/"
-  ]
+    "/node_modules/",
+  ],
 }; 

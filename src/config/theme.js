@@ -20,7 +20,7 @@ const catppuccin = {
   sky: '#89dceb',
   sapphire: '#74c7ec',
   blue: '#89b4fa',
-  lavender: '#b4befe'
+  lavender: '#b4befe',
 };
 
 // Structure description data
@@ -32,9 +32,9 @@ const structureDescriptions = {
       '• Straightforward deployment process',
       '• Familiar structure for WordPress developers',
       '• Easy integration with standard WordPress themes and plugins',
-      '• Suitable for simple WordPress sites'
+      '• Suitable for simple WordPress sites',
     ],
-    color: catppuccin.blue
+    color: catppuccin.blue,
   },
   bedrock: {
     title: 'Bedrock WordPress Structure',
@@ -43,10 +43,10 @@ const structureDescriptions = {
       '• Uses Composer for managing WordPress core and plugins',
       '• Improved directory structure separating web roots from project',
       '• Better environment-specific configuration',
-      '• Recommended for larger or team-based WordPress projects'
+      '• Recommended for larger or team-based WordPress projects',
     ],
-    color: catppuccin.mauve
-  }
+    color: catppuccin.mauve,
+  },
 };
 
 // Box style configuration for UI elements
@@ -56,7 +56,7 @@ const boxStyles = {
     margin: 0,
     borderStyle: 'round',
     borderColor: catppuccin.mauve,
-    float: 'left'
+    float: 'left',
   },
   welcome: {
     padding: 1,
@@ -64,14 +64,14 @@ const boxStyles = {
     borderStyle: 'round',
     borderColor: catppuccin.green,
     float: 'left',
-    backgroundColor: catppuccin.background
+    backgroundColor: catppuccin.background,
   },
   help: {
     padding: 2,
     margin: 0,
     borderStyle: 'round',
     borderColor: catppuccin.lavender,
-    float: 'left'
+    float: 'left',
   },
   nextSteps: {
     padding: { top: 1, right: 2, bottom: 1, left: 2 },
@@ -79,12 +79,12 @@ const boxStyles = {
     borderStyle: 'round',
     borderColor: catppuccin.yellow,
     width: 52,
-    float: 'left'
-  }
+    float: 'left',
+  },
 };
 
 module.exports = {
   catppuccin,
   structureDescriptions,
-  boxStyles
+  boxStyles,
 }; 

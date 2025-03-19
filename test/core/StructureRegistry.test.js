@@ -63,7 +63,7 @@ describe('StructureRegistry', () => {
     
     expect(names).toContain('classic');
     expect(names).toContain('bedrock');
-    expect(names.length).toBe(2);
+    expect(names).toHaveLength(2);
   });
   
   test('should create an instance of a registered structure', () => {

@@ -10,7 +10,7 @@ const {
   displayWelcome, 
   createSectionHeader, 
   displayInfo, 
-  displayWarning 
+  displayWarning, 
 } = require('../utils/ui');
 const structureRegistry = require('../structures');
 

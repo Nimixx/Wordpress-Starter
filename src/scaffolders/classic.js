@@ -22,7 +22,7 @@ const catppuccin = {
   sky: '#89dceb',
   sapphire: '#74c7ec',
   blue: '#89b4fa',
-  lavender: '#b4befe'
+  lavender: '#b4befe',
 };
 
 /**
@@ -44,8 +44,8 @@ function displayClassicInfo() {
       margin: 0,
       borderStyle: 'round',
       borderColor: catppuccin.blue,
-      float: 'left'
-    }
+      float: 'left',
+    },
   );
   
   console.log(classicBox);
@@ -75,8 +75,8 @@ function displayProjectCompletion(projectPath) {
       borderStyle: 'round',
       borderColor: catppuccin.yellow,
       width: 52,
-      float: 'left'
-    })
+      float: 'left',
+    }),
   );
   
   console.log('\n');
@@ -165,7 +165,7 @@ function createClassicStructureManually(projectPath) {
     path.join(wpContentPath, 'uploads'),
   ];
   
-  directories.forEach(dir => {
+  directories.forEach((dir) => {
     fs.mkdirSync(dir);
     console.log(chalk.hex(catppuccin.green)(`  ✓ Created: wp-content/${path.basename(dir)}`));
   });
@@ -184,5 +184,5 @@ function createClassicStructureManually(projectPath) {
 }
 
 module.exports = {
-  createClassicStructure
+  createClassicStructure,
 }; 

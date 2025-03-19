@@ -21,7 +21,7 @@ function displayWelcome() {
     chalk.hex(catppuccin.text)('• Multiple folder structure options\n') +
     chalk.hex(catppuccin.text)('• Automated WordPress installation\n') +
     chalk.hex(catppuccin.text)('• Environment configuration'),
-    boxStyles.welcome
+    boxStyles.welcome,
   );
   
   console.log(welcomeBox);
@@ -89,9 +89,9 @@ function displayStructureDescription(structure, structureDescriptions) {
         borderStyle: 'round',
         borderColor: structureInfo.color,
         width: 70,
-        float: 'left'
-      }
-    )
+        float: 'left',
+      },
+    ),
   );
   
   console.log('\n');
@@ -112,7 +112,7 @@ function displayProjectCompletion(projectName) {
     chalk.hex(catppuccin.text)(`2. Follow the instructions in the README.md file`);
   
   console.log(
-    boxen(nextStepsContent, boxStyles.nextSteps)
+    boxen(nextStepsContent, boxStyles.nextSteps),
   );
   
   console.log('\n');
@@ -126,5 +126,5 @@ module.exports = {
   displayWarning,
   displayProcessing,
   displayStructureDescription,
-  displayProjectCompletion
+  displayProjectCompletion,
 }; 

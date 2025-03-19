@@ -3,17 +3,17 @@ const path = require('path');
 
 // Mock dependencies - we're using manual mocks for these modules
 jest.mock('../src/scaffolders/classic', () => ({
-  createClassicStructure: jest.fn()
+  createClassicStructure: jest.fn(),
 }));
 jest.mock('../src/scaffolders/bedrock', () => ({
-  createBedrockStructure: jest.fn()
+  createBedrockStructure: jest.fn(),
 }));
 jest.mock('../src/scaffolders/common', () => ({
   displayWelcome: jest.fn(),
   createSectionHeader: jest.fn(),
   displaySuccess: jest.fn(),
   displayInfo: jest.fn(),
-  displayWarning: jest.fn()
+  displayWarning: jest.fn(),
 }));
 
 // Import the modules to test

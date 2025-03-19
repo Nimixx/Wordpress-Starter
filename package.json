@@ -10,7 +10,9 @@
     "start": "node ./bin/cli.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "wordpress",
@@ -28,6 +30,11 @@
     "inquirer": "^8.2.4"
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.11.0",
+    "globals": "^16.0.0",
     "jest": "^29.7.0"
   },
   "engines": {

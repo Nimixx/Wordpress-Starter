@@ -12,7 +12,7 @@ const {
   displaySuccess, 
   displayInfo, 
   displayWarning, 
-  displayProcessing 
+  displayProcessing, 
 } = require('../utils/ui');
 
 class Structure {
@@ -66,7 +66,7 @@ class Structure {
    * @param {string[]} relativePaths - Array of paths relative to project root
    */
   createProjectDirs(relativePaths) {
-    relativePaths.forEach(relativePath => {
+    relativePaths.forEach((relativePath) => {
       this.createProjectDir(relativePath);
     });
   }
@@ -107,8 +107,8 @@ ${additionalContent}`;
         margin: 0,
         borderStyle: 'round',
         borderColor: color,
-        float: 'left'
-      }
+        float: 'left',
+      },
     );
     
     console.log(infoBox);
@@ -129,7 +129,7 @@ ${additionalContent}`;
       chalk.hex(catppuccin.text)(`2. Follow the instructions in the README.md file`);
     
     console.log(
-      boxen(nextStepsContent, boxStyles.nextSteps)
+      boxen(nextStepsContent, boxStyles.nextSteps),
     );
     
     console.log('\n');

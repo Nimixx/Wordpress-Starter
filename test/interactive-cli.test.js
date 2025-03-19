@@ -10,11 +10,11 @@ const mockInitialize = jest.fn().mockResolvedValue();
 
 // Mock Project class
 jest.mock('../src/core/project', () => {
-  return jest.fn().mockImplementation(config => {
+  return jest.fn().mockImplementation((config) => {
     return {
       name: config.name,
       structureType: config.structure,
-      initialize: mockInitialize
+      initialize: mockInitialize,
     };
   });
 });
@@ -62,7 +62,7 @@ describe('Interactive CLI Tests', () => {
       // Here we'll just test that initializeProject correctly handles the config
       const config = {
         name: 'interactive-classic',
-        structure: 'classic'
+        structure: 'classic',
       };
       
       await initializeProject(config);
@@ -79,7 +79,7 @@ describe('Interactive CLI Tests', () => {
     test('should use bedrock structure when selected in interactive mode', async () => {
       const config = {
         name: 'interactive-bedrock',
-        structure: 'bedrock'
+        structure: 'bedrock',
       };
       
       await initializeProject(config);

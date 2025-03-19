@@ -19,5 +19,5 @@ async function initializeProject(config) {
 }
 
 module.exports = {
-  initializeProject
+  initializeProject,
 }; 

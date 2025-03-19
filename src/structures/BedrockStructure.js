@@ -26,7 +26,7 @@ class BedrockStructure extends Structure {
       '• Better WordPress configuration for multiple environments\n' +
       '• WP directory installed in a subdirectory (wp/)\n' +
       '• Improved WordPress configuration for scalability',
-      catppuccin.mauve
+      catppuccin.mauve,
     );
   }
 
@@ -125,7 +125,7 @@ class BedrockStructure extends Structure {
     displayProcessing('Creating configuration files...');
     this.writeProjectFile(
       '.env.example', 
-      `DB_NAME=database_name\nDB_USER=database_user\nDB_PASSWORD=database_password\n\nWP_ENV=development\nWP_HOME=http://example.com\nWP_SITEURL=\${WP_HOME}/wp\n`
+      `DB_NAME=database_name\nDB_USER=database_user\nDB_PASSWORD=database_password\n\nWP_ENV=development\nWP_HOME=http://example.com\nWP_SITEURL=\${WP_HOME}/wp\n`,
     );
     
     // Create a basic composer.json file
@@ -136,13 +136,13 @@ class BedrockStructure extends Structure {
       require: {
         "php": ">=7.4",
         "composer/installers": "^2.0",
-        "roots/wordpress": "^6.0"
+        "roots/wordpress": "^6.0",
       },
       config: {
         "allow-plugins": {
-          "composer/installers": true
-        }
-      }
+          "composer/installers": true,
+        },
+      },
     }, null, 2);
     
     this.writeProjectFile('composer.json', composerContent);
@@ -164,14 +164,14 @@ class BedrockStructure extends Structure {
         type: 'confirm',
         name: 'setupEnv',
         message: chalk.hex(catppuccin.sapphire)('🔧 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to set up the .env file with database credentials?'),
-        default: true
-      }
+        default: true,
+      },
     ]);
     
     if (!setupEnvPrompt.setupEnv) {
       displayInfo('Skipping .env setup. You can manually configure it later.');
-      // Ask about Icon packages before completing
-      await this.setupIconPackages();
+      // Ask about Sage theme installation
+      await this.setupSageTheme();
       return;
     }
     
@@ -183,8 +183,8 @@ class BedrockStructure extends Structure {
     
     if (!fs.existsSync(envExamplePath)) {
       displayWarning('.env.example file not found. Skipping .env setup.');
-      // Ask about Icon packages before completing
-      await this.setupIconPackages();
+      // Ask about Sage theme installation
+      await this.setupSageTheme();
       return;
     }
     
@@ -196,26 +196,26 @@ class BedrockStructure extends Structure {
         type: 'input',
         name: 'dbName',
         message: chalk.hex(catppuccin.sapphire)('    ') + 'Database name:',
-        default: 'wordpress'
+        default: 'wordpress',
       },
       {
         type: 'input',
         name: 'dbUser',
         message: chalk.hex(catppuccin.sapphire)('    ') + 'Database user:',
-        default: 'root'
+        default: 'root',
       },
       {
         type: 'input',
         name: 'dbPassword',
         message: chalk.hex(catppuccin.sapphire)('    ') + 'Database password:',
-        default: ''
+        default: '',
       },
       {
         type: 'input',
         name: 'dbHost',
         message: chalk.hex(catppuccin.sapphire)('    ') + 'Database host:',
-        default: 'localhost'
-      }
+        default: 'localhost',
+      },
     ]);
     
     // Get site URL settings
@@ -226,7 +226,7 @@ class BedrockStructure extends Structure {
         type: 'input',
         name: 'wpHome',
         message: chalk.hex(catppuccin.sapphire)('    ') + 'Site URL (WP_HOME):',
-        default: 'http://localhost:8000'
+        default: 'http://localhost:8000',
       },
       {
         type: 'list',
@@ -235,10 +235,10 @@ class BedrockStructure extends Structure {
         choices: [
           { name: '🛠️  Development', value: 'development' },
           { name: '🔍 Staging', value: 'staging' },
-          { name: '🚀 Production', value: 'production' }
+          { name: '🚀 Production', value: 'production' },
         ],
-        default: 'development'
-      }
+        default: 'development',
+      },
     ]);
     
     // Read the .env.example file
@@ -288,7 +288,7 @@ class BedrockStructure extends Structure {
       'AUTH_SALT': generateRandomString(),
       'SECURE_AUTH_SALT': generateRandomString(),
       'LOGGED_IN_SALT': generateRandomString(),
-      'NONCE_SALT': generateRandomString()
+      'NONCE_SALT': generateRandomString(),
     };
     
     // Check if .env already contains salts section
@@ -339,12 +339,188 @@ class BedrockStructure extends Structure {
     console.log('\n');
     console.log(chalk.hex(catppuccin.green).bold('✅ .env file has been configured!'));
     
-    // Ask about Icon packages before completing
-    await this.setupIconPackages();
+    // Ask about Sage theme installation
+    await this.setupSageTheme();
   }
 
   /**
-   * Ask the user if they want to add icon packages
+   * Ask the user if they want to install Sage theme
+   */
+  async setupSageTheme() {
+    createSectionHeader('Sage Theme Setup');
+    
+    // Get the original current directory to return to it later
+    const originalDir = process.cwd();
+    
+    try {
+      // Ask if they want to install the Sage theme
+      const installSagePrompt = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'installSage',
+          message: chalk.hex(catppuccin.sapphire)('🌱 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to install Sage theme?'),
+          default: true,
+        },
+      ]);
+      
+      if (!installSagePrompt.installSage) {
+        displayInfo('Skipping Sage theme installation.');
+        // Continue to icon packages
+        await this.setupIconPackages();
+        return;
+      }
+      
+      // Ask for theme name
+      const themeNamePrompt = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'themeName',
+          message: chalk.hex(catppuccin.sapphire)('📝 ') + chalk.hex(catppuccin.sapphire).bold('Enter a name for your Sage theme:'),
+          default: 'sage-theme',
+          validate: (input) => {
+            if (input.trim() === '') {
+              return 'Theme name cannot be empty';
+            }
+            // Ensure name follows composer package name format
+            if (!/^[a-z0-9]([_.-]?[a-z0-9]+)*\/[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/.test('roots/' + input)) {
+              return 'Theme name must use only lowercase alphanumeric characters, hyphens and underscores';
+            }
+            return true;
+          },
+        },
+      ]);
+      
+      // Change to the themes directory to run composer
+      const themesDirectory = path.join(this.projectPath, 'web', 'app', 'themes');
+      
+      // Ensure the themes directory exists
+      try {
+        if (!fs.existsSync(themesDirectory)) {
+          fs.mkdirSync(themesDirectory, { recursive: true });
+        }
+        
+        process.chdir(themesDirectory);
+        
+        // Install Sage theme
+        displayProcessing(`Installing Sage theme in ${themesDirectory}...`);
+        
+        try {
+          // Execute composer create-project for Sage
+          execSync(`composer create-project roots/sage ${themeNamePrompt.themeName}`, { stdio: 'inherit' });
+          
+          // Change to the theme directory
+          const themeDirectory = path.join(themesDirectory, themeNamePrompt.themeName);
+          process.chdir(themeDirectory);
+          
+          // Install theme dependencies (npm)
+          displayProcessing('Installing theme dependencies...');
+          execSync('npm install', { stdio: 'inherit' });
+          
+          // Build theme assets
+          displayProcessing('Building theme assets...');
+          execSync('npm run build', { stdio: 'inherit' });
+          
+          console.log('\n');
+          console.log(chalk.hex(catppuccin.green).bold(`✅ Sage theme "${themeNamePrompt.themeName}" has been installed successfully!`));
+          
+          // After installing Sage, ask about installing icon packages in the theme
+          await this.setupIconPackagesInTheme(themeDirectory);
+          
+        } catch (error) {
+          displayWarning(`Error installing Sage theme: ${error.message}`);
+          // Even if there was an error, still ask about icon packages
+          await this.setupIconPackages();
+        }
+      } catch (fsError) {
+        displayWarning(`Error creating theme directory: ${fsError.message}`);
+        // Continue to icon packages
+        await this.setupIconPackages();
+      }
+    } finally {
+      try {
+        // Change back to the original directory
+        process.chdir(originalDir);
+      } catch (error) {
+        // Ignore error when changing directory back in tests
+      }
+    }
+  }
+
+  /**
+   * Ask the user if they want to add icon packages to the Sage theme
+   */
+  async setupIconPackagesInTheme(themeDirectory) {
+    createSectionHeader('Icon Packages for Sage Theme');
+    
+    try {
+      // Ask if they want to add Blade icons to the theme
+      const addIconsPrompt = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'addIcons',
+          message: chalk.hex(catppuccin.sapphire)('🎨 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to add icon packages to your Sage theme?'),
+          default: true,
+        },
+      ]);
+      
+      if (!addIconsPrompt.addIcons) {
+        displayInfo('Skipping icon packages installation for theme.');
+        this.displayCompletion();
+        return;
+      }
+      
+      // Ask which icon package(s) to install
+      const iconPackagePrompt = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'iconPackage',
+          message: chalk.hex(catppuccin.sapphire)('📦 ') + chalk.hex(catppuccin.sapphire).bold('Select an icon package to install:'),
+          choices: [
+            { name: '🔷 Lucide Icons', value: 'lucide' },
+            { name: '🔶 Heroicons', value: 'heroicons' },
+            { name: '💠 Fontawesome', value: 'fontawesome' },
+            { name: '🔘 Boxicons', value: 'boxicons' },
+            { name: '⚪ None/Skip', value: 'none' },
+          ],
+          default: 'lucide',
+        },
+      ]);
+      
+      if (iconPackagePrompt.iconPackage === 'none') {
+        displayInfo('Skipping icon package installation.');
+        this.displayCompletion();
+        return;
+      }
+      
+      // Make sure we're in the theme directory
+      process.chdir(themeDirectory);
+      
+      // Install the selected package
+      displayProcessing(`Installing ${this.getIconPackageName(iconPackagePrompt.iconPackage)} icon package in the theme...`);
+      
+      try {
+        // Execute composer require for the package
+        const command = this.getComposerCommand(iconPackagePrompt.iconPackage);
+        execSync(command, { stdio: 'inherit' });
+        
+        console.log('\n');
+        console.log(chalk.hex(catppuccin.green).bold(`✅ ${this.getIconPackageName(iconPackagePrompt.iconPackage)} icons have been installed in the theme!`));
+        
+      } catch (error) {
+        displayWarning(`Error installing icon package in theme: ${error.message}`);
+      }
+      
+      // Display project completion
+      this.displayCompletion();
+      
+    } catch (error) {
+      displayWarning(`Error setting up icon packages in theme: ${error.message}`);
+      this.displayCompletion();
+    }
+  }
+
+  /**
+   * Ask the user if they want to add icon packages to the project
    */
   async setupIconPackages() {
     createSectionHeader('Icons Setup');
@@ -359,8 +535,8 @@ class BedrockStructure extends Structure {
           type: 'confirm',
           name: 'addIcons',
           message: chalk.hex(catppuccin.sapphire)('🎨 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to add Blade icons to your project?'),
-          default: true
-        }
+          default: true,
+        },
       ]);
       
       if (!addIconsPrompt.addIcons) {
@@ -380,10 +556,10 @@ class BedrockStructure extends Structure {
             { name: '🔶 Heroicons', value: 'heroicons' },
             { name: '💠 Fontawesome', value: 'fontawesome' },
             { name: '🔘 Boxicons', value: 'boxicons' },
-            { name: '⚪ None/Skip', value: 'none' }
+            { name: '⚪ None/Skip', value: 'none' },
           ],
-          default: 'lucide'
-        }
+          default: 'lucide',
+        },
       ]);
       
       if (iconPackagePrompt.iconPackage === 'none') {
@@ -429,7 +605,7 @@ class BedrockStructure extends Structure {
       'lucide': 'Lucide',
       'heroicons': 'Heroicons',
       'fontawesome': 'Font Awesome',
-      'boxicons': 'Boxicons'
+      'boxicons': 'Boxicons',
     };
     
     return packageNames[packageKey] || packageKey;
@@ -445,7 +621,7 @@ class BedrockStructure extends Structure {
       'lucide': 'composer require mallardduck/blade-lucide-icons',
       'heroicons': 'composer require blade-ui-kit/blade-heroicons',
       'fontawesome': 'composer require owenvoke/blade-fontawesome',
-      'boxicons': 'composer require andreiio/blade-boxicons'
+      'boxicons': 'composer require andreiio/blade-boxicons',
     };
     
     return commands[packageKey] || '';
