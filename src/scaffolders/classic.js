@@ -40,11 +40,10 @@ function displayClassicInfo() {
     chalk.hex(catppuccin.blue)('• ') + chalk.hex(catppuccin.text)('Compatibility with most WordPress plugins and themes\n') +
     chalk.hex(catppuccin.blue)('• ') + chalk.hex(catppuccin.text)('Familiar environment for WordPress developers'),
     {
-      padding: 1,
-      margin: { top: 0, bottom: 1, left: 0, right: 0 },
+      padding: 2,
+      margin: 0,
       borderStyle: 'round',
       borderColor: catppuccin.blue,
-      backgroundColor: catppuccin.background,
       float: 'left'
     }
   );

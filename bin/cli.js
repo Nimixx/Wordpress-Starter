@@ -63,11 +63,10 @@ function displayStructureDescription(structure) {
       chalk.hex(structureInfo.color).bold(`${structureInfo.title}\n\n`) +
       chalk.hex(catppuccin.text)(structureInfo.description.join('\n')),
       {
-        padding: 1,
-        margin: { top: 1, bottom: 1, left: 0, right: 0 },
+        padding: 2,
+        margin: 0,
         borderStyle: 'round',
         borderColor: structureInfo.color,
-        backgroundColor: catppuccin.background,
         width: 70,
         float: 'left'
       }
@@ -98,11 +97,10 @@ function displayHeader() {
       chalk.hex(catppuccin.text)('Easily setup WordPress projects with custom configurations') + 
       chalk.hex(catppuccin.lavender)('\n\nVersion: 0.1.0'),
       {
-        padding: 1,
-        margin: { top: 0, bottom: 1, left: 0, right: 0 },
+        padding: 2,
+        margin: 0,
         borderStyle: 'round',
         borderColor: catppuccin.mauve,
-        backgroundColor: catppuccin.background,
         float: 'left'
       }
     )
@@ -136,11 +134,10 @@ program
         chalk.hex(catppuccin.blue)('  -s, --structure <structure>  ') + chalk.hex(catppuccin.text)('Folder structure type (classic or bedrock)\n') +
         chalk.hex(catppuccin.blue)('  -h, --help                   ') + chalk.hex(catppuccin.text)('display help for command'),
         {
-          padding: 1,
-          margin: { top: 0, bottom: 1, left: 0, right: 0 },
+          padding: 2,
+          margin: 0,
           borderStyle: 'round',
           borderColor: catppuccin.lavender,
-          backgroundColor: catppuccin.background,
           float: 'left'
         }
       );

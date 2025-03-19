@@ -43,11 +43,10 @@ function displayBedrockInfo() {
     chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('WP directory installed in a subdirectory (wp/)\n') +
     chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Improved WordPress configuration for scalability'),
     {
-      padding: 1,
-      margin: { top: 0, bottom: 1, left: 0, right: 0 },
+      padding: 2,
+      margin: 0,
       borderStyle: 'round',
       borderColor: catppuccin.mauve,
-      backgroundColor: catppuccin.background,
       float: 'left'
     }
   );
