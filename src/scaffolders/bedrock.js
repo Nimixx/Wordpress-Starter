@@ -207,6 +207,7 @@ async function setupEnvFile(projectPath) {
   
   if (!setupEnvPrompt.setupEnv) {
     displayInfo('Skipping .env setup. You can manually configure it later.');
+    displayProjectCompletion(projectPath);
     return;
   }
   
@@ -218,6 +219,7 @@ async function setupEnvFile(projectPath) {
   
   if (!fs.existsSync(envExamplePath)) {
     displayWarning('.env.example file not found. Skipping .env setup.');
+    displayProjectCompletion(projectPath);
     return;
   }
   
@@ -303,7 +305,54 @@ async function setupEnvFile(projectPath) {
   // Write the .env file
   fs.writeFileSync(envPath, envContent);
   
-  displaySuccess('.env file has been configured!');
+  // Display configuration summary
+  console.log('\n');
+  console.log(chalk.hex(catppuccin.mauve).bold('🛢️  Database Configuration:'));
+  console.log(chalk.hex(catppuccin.text)('    Database name: ') + chalk.hex(catppuccin.green)(dbCredentials.dbName));
+  console.log(chalk.hex(catppuccin.text)('    Database user: ') + chalk.hex(catppuccin.green)(dbCredentials.dbUser));
+  console.log(chalk.hex(catppuccin.text)('    Database password: ') + chalk.hex(catppuccin.green)(dbCredentials.dbPassword || '[empty]'));
+  console.log(chalk.hex(catppuccin.text)('    Database host: ') + chalk.hex(catppuccin.green)(dbCredentials.dbHost));
+  
+  console.log('\n');
+  console.log(chalk.hex(catppuccin.sapphire).bold('🌐 Site Configuration:'));
+  console.log(chalk.hex(catppuccin.text)('    Site URL (WP_HOME): ') + chalk.hex(catppuccin.green)(urlSettings.wpHome));
+  console.log(chalk.hex(catppuccin.text)('    Environment: ') + chalk.hex(catppuccin.green)('🛠️ ' + urlSettings.wpEnv.charAt(0).toUpperCase() + urlSettings.wpEnv.slice(1)));
+  
+  console.log('\n');
+  console.log(chalk.hex(catppuccin.green).bold('✅ .env file has been configured!'));
+  
+  // Display project completion
+  displayProjectCompletion(projectPath);
+}
+
+/**
+ * Display project completion with next steps
+ * @param {string} projectPath - Path to the project directory
+ */
+function displayProjectCompletion(projectPath) {
+  const projectName = path.basename(projectPath);
+  
+  console.log('\n');
+  console.log(chalk.hex(catppuccin.green).bold('✅ Project initialized successfully!'));
+  
+  // Display next steps in a styled box
+  const nextStepsContent = 
+    chalk.hex(catppuccin.yellow).bold('📝 Next steps:\n\n') +
+    chalk.hex(catppuccin.text)(`1. cd ${projectName}\n`) +
+    chalk.hex(catppuccin.text)(`2. Follow the instructions in the README.md file`);
+  
+  console.log(
+    boxen(nextStepsContent, {
+      padding: { top: 1, right: 2, bottom: 1, left: 2 },
+      margin: { top: 1, bottom: 1 },
+      borderStyle: 'round',
+      borderColor: catppuccin.yellow,
+      width: 52,
+      float: 'left'
+    })
+  );
+  
+  console.log('\n');
 }
 
 module.exports = {

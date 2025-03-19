@@ -58,11 +58,7 @@ async function initializeProject(config) {
     // Create the folder structure based on the selected type
     await createFolderStructure(projectPath, structureType);
     
-    displaySuccess(`Project initialized successfully!`);
-    console.log(chalk.hex(catppuccin.sapphire).bold('\n📝 Next steps:'));
-    console.log(chalk.hex(catppuccin.text)(`  1. cd ${projectName}`));
-    console.log(chalk.hex(catppuccin.text)(`  2. Follow the instructions in the README.md file`));
-    console.log('\n');
+    // Note: Project completion message is now handled by the specific structure modules
   } catch (error) {
     displayWarning(`Error creating project: ${error.message}`);
     process.exit(1);

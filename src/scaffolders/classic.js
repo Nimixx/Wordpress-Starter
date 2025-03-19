@@ -53,6 +53,36 @@ function displayClassicInfo() {
 }
 
 /**
+ * Display project completion with next steps
+ * @param {string} projectPath - Path to the project directory
+ */
+function displayProjectCompletion(projectPath) {
+  const projectName = path.basename(projectPath);
+  
+  console.log('\n');
+  console.log(chalk.hex(catppuccin.green).bold('✅ Project initialized successfully!'));
+  
+  // Display next steps in a styled box
+  const nextStepsContent = 
+    chalk.hex(catppuccin.yellow).bold('📝 Next steps:\n\n') +
+    chalk.hex(catppuccin.text)(`1. cd ${projectName}\n`) +
+    chalk.hex(catppuccin.text)(`2. Follow the instructions in the README.md file`);
+  
+  console.log(
+    boxen(nextStepsContent, {
+      padding: { top: 1, right: 2, bottom: 1, left: 2 },
+      margin: { top: 1, bottom: 1 },
+      borderStyle: 'round',
+      borderColor: catppuccin.yellow,
+      width: 52,
+      float: 'left'
+    })
+  );
+  
+  console.log('\n');
+}
+
+/**
  * Create a classic WordPress folder structure using WP-CLI
  * @param {string} projectPath - Path to the project directory
  */
@@ -89,7 +119,20 @@ function createClassicStructure(projectPath) {
     const readmePath = path.join(projectPath, 'README.md');
     fs.writeFileSync(readmePath, `# ${path.basename(projectPath)}\n\nWordPress project created with WordPress Starter using the classic structure.\n\n## Structure\nStandard WordPress installation with the latest WordPress core.\n\n## Configuration\nUpdate the database configuration in wp-config.php before running the site.\n`);
     
-    displaySuccess('WordPress core has been downloaded and configured!');
+    console.log('\n');
+    console.log(chalk.hex(catppuccin.green).bold('✅ WordPress core has been downloaded and configured!'));
+    
+    // Display database configuration reminder
+    console.log('\n');
+    console.log(chalk.hex(catppuccin.mauve).bold('🛢️  Database Configuration:'));
+    console.log(chalk.hex(catppuccin.text)('    Edit wp-config.php to set your database credentials:'));
+    console.log(chalk.hex(catppuccin.text)('    Database name: ') + chalk.hex(catppuccin.green)('wordpress_db (update with your own)'));
+    console.log(chalk.hex(catppuccin.text)('    Database user: ') + chalk.hex(catppuccin.green)('root (update with your own)'));
+    console.log(chalk.hex(catppuccin.text)('    Database password: ') + chalk.hex(catppuccin.green)('root (update with your own)'));
+    console.log(chalk.hex(catppuccin.text)('    Database host: ') + chalk.hex(catppuccin.green)('localhost'));
+    
+    // Display project completion message
+    displayProjectCompletion(projectPath);
     
   } catch (error) {
     displayWarning(`Error using WP-CLI: ${error.message}. Falling back to manual folder creation.`);
@@ -133,7 +176,11 @@ function createClassicStructureManually(projectPath) {
   fs.writeFileSync(indexPath, `<?php\n// Silence is golden.\n// This is a placeholder for the WordPress installation.\n`);
   console.log(chalk.hex(catppuccin.green)(`  ✓ Created: index.php`));
   
-  displayWarning('WP-CLI wasn\'t used. You\'ll need to manually download WordPress.');
+  console.log('\n');
+  console.log(chalk.hex(catppuccin.yellow).bold('⚠️ WP-CLI wasn\'t used. You\'ll need to manually download WordPress.'));
+  
+  // Display project completion message
+  displayProjectCompletion(projectPath);
 }
 
 module.exports = {
