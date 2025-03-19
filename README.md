@@ -7,29 +7,36 @@ A CLI tool for scaffolding WordPress projects with a nice UI interface.
 You can use this package directly with npx:
 
 ```bash
-npx create-wordpress-starter <project-name>
+npx create-wordpress-starter
 ```
 
 Or install it globally:
 
 ```bash
 npm install -g create-wordpress-starter
-create-wordpress-starter <project-name>
+create-wordpress-starter
 ```
 
 ## Usage
 
-To create a new WordPress project:
+To create a new WordPress project, run the command and follow the interactive prompts:
 
 ```bash
-npx create-wordpress-starter my-wordpress-site
+npx create-wordpress-starter
 ```
 
-This will create a new directory `my-wordpress-site` in the current location and set up the WordPress project.
+You can also specify the project name directly with the --name option:
+
+```bash
+npx create-wordpress-starter --name my-wordpress-site
+```
+
+This will create a new directory with your specified name in the current location and set up the WordPress project.
 
 ## Features
 
 - Beautiful command-line interface
+- Interactive prompts for project configuration
 - Simple project initialization
 - More features coming soon!
 
@@ -46,7 +53,7 @@ cd create-wordpress-starter
 npm install
 
 # Run the CLI
-npm start my-test-project
+npm start
 ```
 
 ## License

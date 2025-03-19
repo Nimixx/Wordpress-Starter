@@ -18,12 +18,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "boxen": "^5.1.2",
     "chalk": "^4.1.2",
     "commander": "^8.3.0",
     "figlet": "^1.5.2",
-    "boxen": "^5.1.2"
+    "inquirer": "^8.2.4"
   },
   "engines": {
     "node": ">=12"
   }
-} 
+}

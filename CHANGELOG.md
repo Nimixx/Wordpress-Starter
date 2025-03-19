@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic CLI interface with colorful styling
 - Project creation with name parameter
 - Basic README with usage instructions
+- Interactive prompts for project configuration using Inquirer
+- Command-line option for project name (`--name`) as an alternative to prompts
+- Custom-formatted help display with improved readability
+
+### Changed
+- Updated CLI to use interactive prompts instead of requiring command-line arguments
+- Updated documentation to reflect new interactive usage
+- Improved CLI behavior to display prompts immediately without showing help screen first
+- Reorganized code structure for better maintainability
 
 ## [0.1.0] - 2024-03-19
 
