@@ -5,6 +5,26 @@ const { displayWelcome, createSectionHeader, displaySuccess, displayInfo, displa
 const { createClassicStructure } = require('./scaffolders/classic');
 const { createBedrockStructure } = require('./scaffolders/bedrock');
 
+// Catppuccin Mocha Theme Colors
+const catppuccin = {
+  background: '#1e1e2e',
+  text: '#cdd6f4',
+  rosewater: '#f5e0dc',
+  flamingo: '#f2cdcd',
+  pink: '#f5c2e7',
+  mauve: '#cba6f7',
+  red: '#f38ba8',
+  maroon: '#eba0ac',
+  peach: '#fab387',
+  yellow: '#f9e2af',
+  green: '#a6e3a1',
+  teal: '#94e2d5',
+  sky: '#89dceb',
+  sapphire: '#74c7ec',
+  blue: '#89b4fa',
+  lavender: '#b4befe'
+};
+
 /**
  * Initialize a new WordPress project
  * @param {Object} config - Project configuration
@@ -33,15 +53,15 @@ async function initializeProject(config) {
     
     // Create the directory
     fs.mkdirSync(projectPath);
-    console.log(chalk.green(`  ✓ Created directory: ${projectName}`));
+    console.log(chalk.hex(catppuccin.green)(`  ✓ Created directory: ${projectName}`));
     
     // Create the folder structure based on the selected type
     await createFolderStructure(projectPath, structureType);
     
     displaySuccess(`Project initialized successfully!`);
-    console.log(chalk.cyan.bold('\n📝 Next steps:'));
-    console.log(chalk.white(`  1. cd ${projectName}`));
-    console.log(chalk.white(`  2. Follow the instructions in the README.md file`));
+    console.log(chalk.hex(catppuccin.sapphire).bold('\n📝 Next steps:'));
+    console.log(chalk.hex(catppuccin.text)(`  1. cd ${projectName}`));
+    console.log(chalk.hex(catppuccin.text)(`  2. Follow the instructions in the README.md file`));
     console.log('\n');
   } catch (error) {
     displayWarning(`Error creating project: ${error.message}`);

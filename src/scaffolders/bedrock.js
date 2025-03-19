@@ -5,6 +5,26 @@ const { execSync } = require('child_process');
 const inquirer = require('inquirer');
 const { createSectionHeader, displaySuccess, displayInfo, displayWarning, displayProcessing } = require('./common');
 
+// Catppuccin Mocha Theme Colors
+const catppuccin = {
+  background: '#1e1e2e',
+  text: '#cdd6f4',
+  rosewater: '#f5e0dc',
+  flamingo: '#f2cdcd',
+  pink: '#f5c2e7',
+  mauve: '#cba6f7',
+  red: '#f38ba8',
+  maroon: '#eba0ac',
+  peach: '#fab387',
+  yellow: '#f9e2af',
+  green: '#a6e3a1',
+  teal: '#94e2d5',
+  sky: '#89dceb',
+  sapphire: '#74c7ec',
+  blue: '#89b4fa',
+  lavender: '#b4befe'
+};
+
 /**
  * Create a Bedrock WordPress folder structure using Composer
  * @param {string} projectPath - Path to the project directory
@@ -100,14 +120,14 @@ async function createBedrockStructureManually(projectPath) {
   
   directories.forEach(dir => {
     fs.mkdirSync(dir, { recursive: true });
-    console.log(chalk.green(`  ✓ Created: ${path.relative(process.cwd(), dir)}`));
+    console.log(chalk.hex(catppuccin.green)(`  ✓ Created: ${path.relative(process.cwd(), dir)}`));
   });
   
   // Create a .env example file
   displayProcessing('Creating configuration files...');
   const envPath = path.join(projectPath, '.env.example');
   fs.writeFileSync(envPath, `DB_NAME=database_name\nDB_USER=database_user\nDB_PASSWORD=database_password\n\nWP_ENV=development\nWP_HOME=http://example.com\nWP_SITEURL=\${WP_HOME}/wp\n`);
-  console.log(chalk.green('  ✓ Created: .env.example'));
+  console.log(chalk.hex(catppuccin.green)('  ✓ Created: .env.example'));
   
   // Create a basic composer.json file
   const composerPath = path.join(projectPath, 'composer.json');
@@ -128,7 +148,7 @@ async function createBedrockStructureManually(projectPath) {
   }, null, 2);
   
   fs.writeFileSync(composerPath, composerContent);
-  console.log(chalk.green('  ✓ Created: composer.json'));
+  console.log(chalk.hex(catppuccin.green)('  ✓ Created: composer.json'));
   
   displayWarning('Composer wasn\'t used. You\'ll need to manually run composer install to complete the setup.');
   
@@ -147,7 +167,7 @@ async function setupEnvFile(projectPath) {
     {
       type: 'confirm',
       name: 'setupEnv',
-      message: chalk.cyan('🔧 ') + chalk.cyan.bold('Would you like to set up the .env file with database credentials?'),
+      message: chalk.hex(catppuccin.sapphire)('🔧 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to set up the .env file with database credentials?'),
       default: true
     }
   ]);
@@ -169,49 +189,49 @@ async function setupEnvFile(projectPath) {
   }
   
   // Get database credentials from user
-  console.log(chalk.cyan.bold('\n🛢️  Database Configuration:\n'));
+  console.log(chalk.hex(catppuccin.sapphire).bold('\n🛢️  Database Configuration:\n'));
   
   const dbCredentials = await inquirer.prompt([
     {
       type: 'input',
       name: 'dbName',
-      message: chalk.cyan('    ') + 'Database name:',
+      message: chalk.hex(catppuccin.sapphire)('    ') + 'Database name:',
       default: 'wordpress'
     },
     {
       type: 'input',
       name: 'dbUser',
-      message: chalk.cyan('    ') + 'Database user:',
+      message: chalk.hex(catppuccin.sapphire)('    ') + 'Database user:',
       default: 'root'
     },
     {
       type: 'input',
       name: 'dbPassword',
-      message: chalk.cyan('    ') + 'Database password:',
+      message: chalk.hex(catppuccin.sapphire)('    ') + 'Database password:',
       default: ''
     },
     {
       type: 'input',
       name: 'dbHost',
-      message: chalk.cyan('    ') + 'Database host:',
+      message: chalk.hex(catppuccin.sapphire)('    ') + 'Database host:',
       default: 'localhost'
     }
   ]);
   
   // Get site URL settings
-  console.log(chalk.cyan.bold('\n🌐 Site Configuration:\n'));
+  console.log(chalk.hex(catppuccin.sapphire).bold('\n🌐 Site Configuration:\n'));
   
   const urlSettings = await inquirer.prompt([
     {
       type: 'input',
       name: 'wpHome',
-      message: chalk.cyan('    ') + 'Site URL (WP_HOME):',
+      message: chalk.hex(catppuccin.sapphire)('    ') + 'Site URL (WP_HOME):',
       default: 'http://localhost:8000'
     },
     {
       type: 'list',
       name: 'wpEnv',
-      message: chalk.cyan('    ') + 'Environment:',
+      message: chalk.hex(catppuccin.sapphire)('    ') + 'Environment:',
       choices: [
         { name: '🛠️  Development', value: 'development' },
         { name: '🔍 Staging', value: 'staging' },
@@ -250,7 +270,7 @@ async function setupEnvFile(projectPath) {
   // Write the .env file
   fs.writeFileSync(envPath, envContent);
   
-  displaySuccess('.env file has been set up with your database credentials and site settings!');
+  displaySuccess('.env file has been configured!');
 }
 
 module.exports = {

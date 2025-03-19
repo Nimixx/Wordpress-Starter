@@ -8,11 +8,31 @@ const inquirer = require('inquirer');
 const { initializeProject } = require('../src/index');
 const { displayWelcome } = require('../src/scaffolders/common');
 
+// Catppuccin Mocha Theme Colors
+const catppuccin = {
+  background: '#1e1e2e',
+  text: '#cdd6f4',
+  rosewater: '#f5e0dc',
+  flamingo: '#f2cdcd',
+  pink: '#f5c2e7',
+  mauve: '#cba6f7',
+  red: '#f38ba8',
+  maroon: '#eba0ac',
+  peach: '#fab387',
+  yellow: '#f9e2af',
+  green: '#a6e3a1',
+  teal: '#94e2d5',
+  sky: '#89dceb',
+  sapphire: '#74c7ec',
+  blue: '#89b4fa',
+  lavender: '#b4befe'
+};
+
 // Function to display the header
 function displayHeader() {
   console.log('\n');
   console.log(
-    chalk.cyan(
+    chalk.hex(catppuccin.mauve)(
       figlet.textSync('WordPress Starter', { 
         font: 'Standard',
         horizontalLayout: 'default',
@@ -25,16 +45,16 @@ function displayHeader() {
   // Display a description box
   console.log(
     boxen(
-      chalk.white.bold('A modern WordPress project scaffolding tool\n\n') +
-      chalk.white('Easily setup WordPress projects with custom configurations') + 
-      chalk.cyan('\n\nVersion: 0.1.0'),
+      chalk.hex(catppuccin.text).bold('A modern WordPress project scaffolding tool\n\n') +
+      chalk.hex(catppuccin.text)('Easily setup WordPress projects with custom configurations') + 
+      chalk.hex(catppuccin.lavender)('\n\nVersion: 0.1.0'),
       {
         padding: 1,
-        margin: 1,
+        margin: { top: 0, bottom: 1, left: 0, right: 0 },
         borderStyle: 'round',
-        borderColor: 'cyan',
-        backgroundColor: '#222',
-        float: 'center'
+        borderColor: catppuccin.mauve,
+        backgroundColor: catppuccin.background,
+        float: 'left'
       }
     )
   );
@@ -56,22 +76,23 @@ program
     // Check if help option is specified
     if (options.help) {
       // Display custom formatted help
-      console.log(chalk.bold('\nA tool for scaffolding WordPress projects\n'));
+      console.log(chalk.hex(catppuccin.text).bold('\nA tool for scaffolding WordPress projects\n'));
       
       const helpBox = boxen(
-        chalk.bold.white('USAGE\n\n') +
-        chalk.white('  npx create-wordpress-starter [options]\n\n') +
-        chalk.bold.white('OPTIONS\n\n') +
-        chalk.cyan('  -V, --version                ') + chalk.white('output the version number\n') +
-        chalk.cyan('  -n, --name <project-name>    ') + chalk.white('Name of the WordPress project to create\n') +
-        chalk.cyan('  -s, --structure <structure>  ') + chalk.white('Folder structure type (classic or bedrock)\n') +
-        chalk.cyan('  -h, --help                   ') + chalk.white('display help for command'),
+        chalk.hex(catppuccin.text).bold('USAGE\n\n') +
+        chalk.hex(catppuccin.text)('  npx create-wordpress-starter [options]\n\n') +
+        chalk.hex(catppuccin.text).bold('OPTIONS\n\n') +
+        chalk.hex(catppuccin.blue)('  -V, --version                ') + chalk.hex(catppuccin.text)('output the version number\n') +
+        chalk.hex(catppuccin.blue)('  -n, --name <project-name>    ') + chalk.hex(catppuccin.text)('Name of the WordPress project to create\n') +
+        chalk.hex(catppuccin.blue)('  -s, --structure <structure>  ') + chalk.hex(catppuccin.text)('Folder structure type (classic or bedrock)\n') +
+        chalk.hex(catppuccin.blue)('  -h, --help                   ') + chalk.hex(catppuccin.text)('display help for command'),
         {
           padding: 1,
-          margin: 1,
+          margin: { top: 0, bottom: 1, left: 0, right: 0 },
           borderStyle: 'round',
-          borderColor: 'white',
-          float: 'center'
+          borderColor: catppuccin.lavender,
+          backgroundColor: catppuccin.background,
+          float: 'left'
         }
       );
       
@@ -88,7 +109,7 @@ program
     // If project name was provided via command line, use it
     if (options.name) {
       projectConfig.name = options.name;
-      console.log(chalk.green.bold(`\n🚀 Creating a new WordPress project: ${chalk.bold(options.name)}...\n`));
+      console.log(chalk.hex(catppuccin.green).bold(`\n🚀 Creating a new WordPress project: ${chalk.hex(catppuccin.text).bold(options.name)}...\n`));
       await initializeProject(projectConfig);
     } else {
       // Otherwise, prompt the user for project details
@@ -99,7 +120,7 @@ program
           {
             type: 'input',
             name: 'projectName',
-            message: chalk.cyan('📂 ') + chalk.cyan.bold('What is the name of your WordPress project?'),
+            message: chalk.hex(catppuccin.sapphire)('📂 ') + chalk.hex(catppuccin.sapphire).bold('What is the name of your WordPress project?'),
             validate: (input) => {
               if (input.trim().length === 0) {
                 return 'Project name cannot be empty';
@@ -110,14 +131,14 @@ program
           {
             type: 'list',
             name: 'structure',
-            message: chalk.cyan('🏗️  ') + chalk.cyan.bold('Which folder structure would you like to use?'),
+            message: chalk.hex(catppuccin.sapphire)('🏗️  ') + chalk.hex(catppuccin.sapphire).bold('Which folder structure would you like to use?'),
             choices: [
               { 
-                name: chalk.blue.bold('1. Classic WordPress') + chalk.white(' - Traditional WordPress setup'),
+                name: chalk.hex(catppuccin.blue).bold('1. Classic WordPress') + chalk.hex(catppuccin.text)(' - Traditional WordPress setup'),
                 value: 'classic' 
               },
               { 
-                name: chalk.magenta.bold('2. Bedrock') + chalk.white(' - Modern WordPress stack with improved security'),
+                name: chalk.hex(catppuccin.mauve).bold('2. Bedrock') + chalk.hex(catppuccin.text)(' - Modern WordPress stack with improved security'),
                 value: 'bedrock' 
               }
             ],
@@ -128,10 +149,10 @@ program
         projectConfig.name = answers.projectName;
         projectConfig.structure = answers.structure;
         
-        console.log(chalk.green.bold(`\n🚀 Creating a new WordPress project: ${chalk.bold(answers.projectName)} with ${chalk.bold(answers.structure)} structure...\n`));
+        console.log(chalk.hex(catppuccin.green).bold(`\n🚀 Creating a new WordPress project: ${chalk.hex(catppuccin.text).bold(answers.projectName)} with ${chalk.hex(catppuccin.text).bold(answers.structure)} structure...\n`));
         await initializeProject(projectConfig);
       } catch (error) {
-        console.error(chalk.red(`\n❌ Error during project setup: ${error.message}\n`));
+        console.error(chalk.hex(catppuccin.red)(`\n❌ Error during project setup: ${error.message}\n`));
       }
     }
   });
