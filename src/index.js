@@ -11,7 +11,7 @@ const { createBedrockStructure } = require('./scaffolders/bedrock');
  * @param {string} config.name - Name of the project and root folder
  * @param {string} config.structure - Structure type ('classic' or 'bedrock')
  */
-function initializeProject(config) {
+async function initializeProject(config) {
   const projectName = config.name;
   const structureType = config.structure || 'classic';
   
@@ -35,7 +35,7 @@ function initializeProject(config) {
     console.log(chalk.green(`✅ Created directory: ${projectName}`));
     
     // Create the folder structure based on the selected type
-    createFolderStructure(projectPath, structureType);
+    await createFolderStructure(projectPath, structureType);
     
     console.log(chalk.green(`\n✅ Project initialized successfully!`));
     console.log(chalk.cyan(`\nNext steps:`));
@@ -52,13 +52,13 @@ function initializeProject(config) {
  * @param {string} projectPath - Path to the project directory
  * @param {string} structureType - Structure type ('classic' or 'bedrock')
  */
-function createFolderStructure(projectPath, structureType) {
+async function createFolderStructure(projectPath, structureType) {
   console.log(chalk.cyan(`Setting up ${chalk.bold(structureType)} folder structure...`));
   
   if (structureType === 'classic') {
     createClassicStructure(projectPath);
   } else if (structureType === 'bedrock') {
-    createBedrockStructure(projectPath);
+    await createBedrockStructure(projectPath);
   } else {
     console.log(chalk.yellow(`Warning: Unknown structure type '${structureType}', using classic structure.`));
     createClassicStructure(projectPath);

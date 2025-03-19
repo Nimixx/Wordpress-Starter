@@ -68,7 +68,7 @@ program
     if (options.name) {
       projectConfig.name = options.name;
       console.log(chalk.green(`\n🚀 Creating a new WordPress project: ${chalk.bold(options.name)}...\n`));
-      initializeProject(projectConfig);
+      await initializeProject(projectConfig);
     } else {
       // Otherwise, prompt the user for project details
       try {
@@ -102,7 +102,7 @@ program
         projectConfig.structure = answers.structure;
         
         console.log(chalk.green(`\n🚀 Creating a new WordPress project: ${chalk.bold(answers.projectName)} with ${chalk.bold(answers.structure)} structure...\n`));
-        initializeProject(projectConfig);
+        await initializeProject(projectConfig);
       } catch (error) {
         console.error(chalk.red('Error during project setup:'), error);
       }

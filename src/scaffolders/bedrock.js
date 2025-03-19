@@ -2,19 +2,20 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const inquirer = require('inquirer');
 
 /**
  * Create a Bedrock WordPress folder structure using Composer
  * @param {string} projectPath - Path to the project directory
  */
-function createBedrockStructure(projectPath) {
+async function createBedrockStructure(projectPath) {
   try {
     // Check if Composer is installed
     try {
       execSync('composer --version', { stdio: 'ignore' });
     } catch (error) {
       console.log(chalk.yellow('Composer is not installed or not in PATH. Falling back to manual folder creation.'));
-      createBedrockStructureManually(projectPath);
+      await createBedrockStructureManually(projectPath);
       return;
     }
 
@@ -57,6 +58,9 @@ Modern WordPress stack with improved folder structure and security from Roots Be
       
       console.log(chalk.green('✅ Bedrock has been successfully set up!'));
       
+      // Ask if the user wants to set up the .env file
+      await setupEnvFile(projectPath);
+      
     } finally {
       // Change back to the original directory
       process.chdir(originalDir);
@@ -65,7 +69,7 @@ Modern WordPress stack with improved folder structure and security from Roots Be
   } catch (error) {
     console.log(chalk.yellow(`Error using Composer: ${error.message}`));
     console.log(chalk.yellow('Falling back to manual folder creation...'));
-    createBedrockStructureManually(projectPath);
+    await createBedrockStructureManually(projectPath);
   }
 }
 
@@ -73,7 +77,7 @@ Modern WordPress stack with improved folder structure and security from Roots Be
  * Fallback method to create Bedrock-like folder structure manually
  * @param {string} projectPath - Path to the project directory
  */
-function createBedrockStructureManually(projectPath) {
+async function createBedrockStructureManually(projectPath) {
   // Create README with bedrock structure info
   const readmePath = path.join(projectPath, 'README.md');
   fs.writeFileSync(readmePath, `# ${path.basename(projectPath)}\n\nWordPress project created with WordPress Starter using the Bedrock structure.\n\n## Structure\nModern WordPress stack with improved folder structure and security.\n`);
@@ -119,6 +123,116 @@ function createBedrockStructureManually(projectPath) {
   fs.writeFileSync(composerPath, composerContent);
   
   console.log(chalk.yellow('Note: Composer wasn\'t used. You\'ll need to manually run composer install to complete the setup.'));
+  
+  // Ask if the user wants to set up the .env file
+  await setupEnvFile(projectPath);
+}
+
+/**
+ * Set up the .env file by prompting for database and URL settings
+ * @param {string} projectPath - Path to the project directory
+ */
+async function setupEnvFile(projectPath) {
+  const setupEnvPrompt = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'setupEnv',
+      message: 'Would you like to set up the .env file with database credentials?',
+      default: true
+    }
+  ]);
+  
+  if (!setupEnvPrompt.setupEnv) {
+    console.log(chalk.cyan('Skipping .env setup. You can manually configure it later.'));
+    return;
+  }
+  
+  console.log(chalk.cyan('\n⏳ Setting up .env file...'));
+  
+  // Check if .env.example exists
+  const envExamplePath = path.join(projectPath, '.env.example');
+  const envPath = path.join(projectPath, '.env');
+  
+  if (!fs.existsSync(envExamplePath)) {
+    console.log(chalk.yellow('Warning: .env.example file not found. Skipping .env setup.'));
+    return;
+  }
+  
+  // Get database credentials from user
+  const dbCredentials = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'dbName',
+      message: 'Database name:',
+      default: 'wordpress'
+    },
+    {
+      type: 'input',
+      name: 'dbUser',
+      message: 'Database user:',
+      default: 'root'
+    },
+    {
+      type: 'input',
+      name: 'dbPassword',
+      message: 'Database password:',
+      default: ''
+    },
+    {
+      type: 'input',
+      name: 'dbHost',
+      message: 'Database host:',
+      default: 'localhost'
+    }
+  ]);
+  
+  // Get site URL settings
+  const urlSettings = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'wpHome',
+      message: 'Site URL (WP_HOME):',
+      default: 'http://localhost:8000'
+    },
+    {
+      type: 'list',
+      name: 'wpEnv',
+      message: 'Environment:',
+      choices: ['development', 'staging', 'production'],
+      default: 'development'
+    }
+  ]);
+  
+  // Read the .env.example file
+  const envExampleContent = fs.readFileSync(envExamplePath, 'utf8');
+  
+  // Replace the placeholders with actual values
+  let envContent = envExampleContent
+    .replace(/DB_NAME=.*/g, `DB_NAME=${dbCredentials.dbName}`)
+    .replace(/DB_USER=.*/g, `DB_USER=${dbCredentials.dbUser}`)
+    .replace(/DB_PASSWORD=.*/g, `DB_PASSWORD=${dbCredentials.dbPassword}`);
+  
+  // Add DB_HOST if not already in the template
+  if (!envContent.includes('DB_HOST=')) {
+    envContent = envContent.replace(/DB_PASSWORD=.*(\n|$)/g, `DB_PASSWORD=${dbCredentials.dbPassword}\nDB_HOST=${dbCredentials.dbHost}`);
+  } else {
+    envContent = envContent.replace(/DB_HOST=.*/g, `DB_HOST=${dbCredentials.dbHost}`);
+  }
+  
+  // Update environment and URL settings
+  envContent = envContent
+    .replace(/WP_ENV=.*/g, `WP_ENV=${urlSettings.wpEnv}`)
+    .replace(/WP_HOME=.*/g, `WP_HOME=${urlSettings.wpHome}`);
+  
+  // Ensure WP_SITEURL is set correctly
+  if (!envContent.includes('WP_SITEURL=')) {
+    envContent = envContent.replace(/WP_HOME=.*(\n|$)/g, `WP_HOME=${urlSettings.wpHome}\nWP_SITEURL=\${WP_HOME}/wp`);
+  }
+  
+  // Write the .env file
+  fs.writeFileSync(envPath, envContent);
+  
+  console.log(chalk.green('✅ .env file has been set up with your database credentials and site settings!'));
 }
 
 module.exports = {
