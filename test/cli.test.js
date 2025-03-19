@@ -2,26 +2,43 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Mock dependencies - we're using manual mocks for these modules
-jest.mock('../src/scaffolders/classic');
-jest.mock('../src/scaffolders/bedrock');
-jest.mock('inquirer');
+// Mock the Project class
+jest.mock('../src/core/Project', () => {
+  const mockInitialize = jest.fn().mockResolvedValue();
+  const ProjectMock = jest.fn().mockImplementation(() => {
+    return {
+      initialize: mockInitialize
+    };
+  });
+  
+  // Attach the mock.instances array to make the tests work
+  ProjectMock.mockInitialize = mockInitialize;
+  
+  return ProjectMock;
+});
 
-// Import the mocked modules
-const inquirer = require('inquirer');
-const { createClassicStructure } = require('../src/scaffolders/classic');
-const { createBedrockStructure } = require('../src/scaffolders/bedrock');
+// Mock path and fs
+jest.mock('path', () => ({
+  join: jest.fn().mockImplementation((...args) => args.join('/'))
+}));
+
+jest.mock('fs', () => ({
+  existsSync: jest.fn().mockReturnValue(false),
+  mkdirSync: jest.fn()
+}));
+
+// Mock UI utils
+jest.mock('../src/utils/ui', () => ({
+  displayWelcome: jest.fn(),
+  displayStructureDescription: jest.fn(),
+  createSectionHeader: jest.fn(),
+  displayInfo: jest.fn(),
+  displayWarning: jest.fn()
+}));
 
 // Import the module to test
 const { initializeProject } = require('../src/index');
-
-// Setup mocks
-jest.mock('../src/scaffolders/classic', () => ({
-  createClassicStructure: jest.fn()
-}));
-jest.mock('../src/scaffolders/bedrock', () => ({
-  createBedrockStructure: jest.fn()
-}));
+const Project = require('../src/core/project');
 
 describe('CLI Functionality Tests', () => {
   beforeEach(() => {
@@ -30,11 +47,6 @@ describe('CLI Functionality Tests', () => {
     
     // Mock console methods to silence output during tests
     jest.spyOn(console, 'log').mockImplementation(() => {});
-    
-    // Mock fs methods using spyOn
-    jest.spyOn(fs, 'existsSync').mockReturnValue(false);
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {});
-    jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
     
     // Mock process.exit to prevent tests from exiting
     jest.spyOn(process, 'exit').mockImplementation(() => {});
@@ -46,7 +58,7 @@ describe('CLI Functionality Tests', () => {
   });
 
   describe('initializeProject function', () => {
-    test('should create a classic WordPress structure when classic structure is specified', async () => {
+    test('should create a new Project instance with classic structure when classic structure is specified', async () => {
       // Arrange
       const config = {
         name: 'test-project',
@@ -57,12 +69,11 @@ describe('CLI Functionality Tests', () => {
       await initializeProject(config);
       
       // Assert
-      expect(fs.mkdirSync).toHaveBeenCalled();
-      expect(createClassicStructure).toHaveBeenCalled();
-      expect(createBedrockStructure).not.toHaveBeenCalled();
+      expect(Project).toHaveBeenCalledWith(config);
+      expect(Project.mockInitialize).toHaveBeenCalled();
     });
 
-    test('should create a bedrock WordPress structure when bedrock structure is specified', async () => {
+    test('should create a new Project instance with bedrock structure when bedrock structure is specified', async () => {
       // Arrange
       const config = {
         name: 'test-project',
@@ -73,61 +84,24 @@ describe('CLI Functionality Tests', () => {
       await initializeProject(config);
       
       // Assert
-      expect(fs.mkdirSync).toHaveBeenCalled();
-      expect(createBedrockStructure).toHaveBeenCalled();
-      expect(createClassicStructure).not.toHaveBeenCalled();
+      expect(Project).toHaveBeenCalledWith(config);
+      expect(Project.mockInitialize).toHaveBeenCalled();
     });
 
-    test('should default to classic structure when an invalid structure is specified', async () => {
+    test('should pass the structure type to the Project constructor', async () => {
       // Arrange
       const config = {
         name: 'test-project',
-        structure: 'invalid-structure'
+        structure: 'custom-structure'
       };
       
       // Act
       await initializeProject(config);
       
       // Assert
-      expect(fs.mkdirSync).toHaveBeenCalled();
-      expect(createClassicStructure).toHaveBeenCalled();
-      expect(createBedrockStructure).not.toHaveBeenCalled();
-    });
-
-    test('should exit process if directory already exists', async () => {
-      // Arrange
-      const config = {
-        name: 'existing-project',
-        structure: 'classic'
-      };
-      
-      // Mock existsSync to return true for this test only
-      const mockExistsSync = jest.spyOn(fs, 'existsSync');
-      mockExistsSync.mockImplementation((path) => {
-        if (path.includes('existing-project')) {
-          return true;
-        }
-        return false;
-      });
-      
-      // Mock process.exit to throw an error to terminate execution
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation((code) => {
-        throw new Error(`Process exited with code ${code}`);
-      });
-      
-      // Act & Assert
-      try {
-        await initializeProject(config);
-        // If we get here, the test should fail
-        fail('initializeProject should have thrown an error');
-      } catch (error) {
-        // Error should be from our mocked process.exit
-        expect(error.message).toBe('Process exited with code 1');
-        expect(fs.existsSync).toHaveBeenCalled();
-        expect(mockExit).toHaveBeenCalledWith(1);
-        expect(createClassicStructure).not.toHaveBeenCalled();
-        expect(createBedrockStructure).not.toHaveBeenCalled();
-      }
+      expect(Project).toHaveBeenCalledWith(expect.objectContaining({ 
+        structure: 'custom-structure' 
+      }));
     });
   });
 

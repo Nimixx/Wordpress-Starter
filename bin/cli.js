@@ -6,55 +6,43 @@ const figlet = require('figlet');
 const boxen = require('boxen');
 const inquirer = require('inquirer');
 const { initializeProject } = require('../src/index');
-const { displayWelcome } = require('../src/scaffolders/common');
+const { displayWelcome } = require('../src/utils/ui');
+const { catppuccin, structureDescriptions, boxStyles } = require('../src/config/theme');
+const structureRegistry = require('../src/structures');
 
-// Catppuccin Mocha Theme Colors
-const catppuccin = {
-  background: '#1e1e2e',
-  text: '#cdd6f4',
-  rosewater: '#f5e0dc',
-  flamingo: '#f2cdcd',
-  pink: '#f5c2e7',
-  mauve: '#cba6f7',
-  red: '#f38ba8',
-  maroon: '#eba0ac',
-  peach: '#fab387',
-  yellow: '#f9e2af',
-  green: '#a6e3a1',
-  teal: '#94e2d5',
-  sky: '#89dceb',
-  sapphire: '#74c7ec',
-  blue: '#89b4fa',
-  lavender: '#b4befe'
-};
+/**
+ * Display the header
+ */
+function displayHeader() {
+  console.log('\n');
+  console.log(
+    chalk.hex(catppuccin.mauve)(
+      figlet.textSync('WordPress Starter', { 
+        font: 'Standard',
+        horizontalLayout: 'default',
+        verticalLayout: 'default'
+      })
+    )
+  );
+  console.log('\n');
 
-// Description data for WordPress structures
-const structureDescriptions = {
-  classic: {
-    title: 'Classic WordPress Structure',
-    description: [
-      '• Traditional WordPress setup with wp-content directory',
-      '• Straightforward deployment process',
-      '• Familiar structure for WordPress developers',
-      '• Easy integration with standard WordPress themes and plugins',
-      '• Suitable for simple WordPress sites'
-    ],
-    color: catppuccin.blue
-  },
-  bedrock: {
-    title: 'Bedrock WordPress Structure',
-    description: [
-      '• Modern WordPress stack with improved security and dependency management',
-      '• Uses Composer for managing WordPress core and plugins',
-      '• Improved directory structure separating web roots from project',
-      '• Better environment-specific configuration',
-      '• Recommended for larger or team-based WordPress projects'
-    ],
-    color: catppuccin.mauve
-  }
-};
+  // Display a description box
+  console.log(
+    boxen(
+      chalk.hex(catppuccin.text).bold('A modern WordPress project scaffolding tool\n\n') +
+      chalk.hex(catppuccin.text)('Easily setup WordPress projects with custom configurations') + 
+      chalk.hex(catppuccin.lavender)('\n\nVersion: 0.1.0'),
+      boxStyles.default
+    )
+  );
+  
+  console.log('\n');
+}
 
-// Function to display a structure description box
+/**
+ * Display a structure description box
+ * @param {string} structure - The structure type ('classic' or 'bedrock')
+ */
 function displayStructureDescription(structure) {
   const structureInfo = structureDescriptions[structure];
   
@@ -76,45 +64,12 @@ function displayStructureDescription(structure) {
   console.log('\n');
 }
 
-// Function to display the header
-function displayHeader() {
-  console.log('\n');
-  console.log(
-    chalk.hex(catppuccin.mauve)(
-      figlet.textSync('WordPress Starter', { 
-        font: 'Standard',
-        horizontalLayout: 'default',
-        verticalLayout: 'default'
-      })
-    )
-  );
-  console.log('\n');
-
-  // Display a description box
-  console.log(
-    boxen(
-      chalk.hex(catppuccin.text).bold('A modern WordPress project scaffolding tool\n\n') +
-      chalk.hex(catppuccin.text)('Easily setup WordPress projects with custom configurations') + 
-      chalk.hex(catppuccin.lavender)('\n\nVersion: 0.1.0'),
-      {
-        padding: 2,
-        margin: 0,
-        borderStyle: 'round',
-        borderColor: catppuccin.mauve,
-        float: 'left'
-      }
-    )
-  );
-  
-  console.log('\n');
-}
-
 // Set up CLI commands with optional project name
 program
   .version('0.1.0')
   .description('A tool for scaffolding WordPress projects')
   .option('-n, --name <project-name>', 'Name of the WordPress project to create')
-  .option('-s, --structure <structure-type>', 'Folder structure: classic or bedrock', 'classic')
+  .option('-s, --structure <structure-type>', 'Folder structure: classic or bedrock', structureRegistry.getDefaultName())
   .option('-h, --help', 'Display help information')
   .allowUnknownOption(false)
   .action(async (options) => {
@@ -131,15 +86,9 @@ program
         chalk.hex(catppuccin.text).bold('OPTIONS\n\n') +
         chalk.hex(catppuccin.blue)('  -V, --version                ') + chalk.hex(catppuccin.text)('output the version number\n') +
         chalk.hex(catppuccin.blue)('  -n, --name <project-name>    ') + chalk.hex(catppuccin.text)('Name of the WordPress project to create\n') +
-        chalk.hex(catppuccin.blue)('  -s, --structure <structure>  ') + chalk.hex(catppuccin.text)('Folder structure type (classic or bedrock)\n') +
+        chalk.hex(catppuccin.blue)('  -s, --structure <structure>  ') + chalk.hex(catppuccin.text)(`Folder structure type (${structureRegistry.getNames().join(' or ')})\n`) +
         chalk.hex(catppuccin.blue)('  -h, --help                   ') + chalk.hex(catppuccin.text)('display help for command'),
-        {
-          padding: 2,
-          margin: 0,
-          borderStyle: 'round',
-          borderColor: catppuccin.lavender,
-          float: 'left'
-        }
+        boxStyles.help
       );
       
       console.log(helpBox);
@@ -219,7 +168,7 @@ program
                   value: 'bedrock' 
                 }
               ],
-              default: 'classic'
+              default: structureRegistry.getDefaultName()
             }
           ]);
           

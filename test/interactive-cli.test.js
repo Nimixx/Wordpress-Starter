@@ -5,20 +5,23 @@ const inquirer = require('inquirer');
 // Mock inquirer
 jest.mock('inquirer');
 
-// Mock dependencies
-jest.mock('../src/scaffolders/classic', () => ({
-  createClassicStructure: jest.fn()
-}));
-jest.mock('../src/scaffolders/bedrock', () => ({
-  createBedrockStructure: jest.fn()
-}));
+// Create a spy for the initialize method
+const mockInitialize = jest.fn().mockResolvedValue();
 
-// Import the mocked modules
-const { createClassicStructure } = require('../src/scaffolders/classic');
-const { createBedrockStructure } = require('../src/scaffolders/bedrock');
+// Mock Project class
+jest.mock('../src/core/project', () => {
+  return jest.fn().mockImplementation(config => {
+    return {
+      name: config.name,
+      structureType: config.structure,
+      initialize: mockInitialize
+    };
+  });
+});
 
 // Import the module to test
 const { initializeProject } = require('../src/index');
+const Project = require('../src/core/project');
 
 // Mock the CLI interface
 jest.mock('../bin/cli.js', () => ({}));
@@ -64,8 +67,13 @@ describe('Interactive CLI Tests', () => {
       
       await initializeProject(config);
       
-      expect(createClassicStructure).toHaveBeenCalled();
-      expect(createBedrockStructure).not.toHaveBeenCalled();
+      expect(Project).toHaveBeenCalledWith(config);
+      expect(mockInitialize).toHaveBeenCalled();
+      
+      // Get the last instance created
+      const lastCall = Project.mock.calls.length - 1;
+      const instance = Project.mock.results[lastCall].value;
+      expect(instance.structureType).toBe('classic');
     });
 
     test('should use bedrock structure when selected in interactive mode', async () => {
@@ -76,8 +84,13 @@ describe('Interactive CLI Tests', () => {
       
       await initializeProject(config);
       
-      expect(createBedrockStructure).toHaveBeenCalled();
-      expect(createClassicStructure).not.toHaveBeenCalled();
+      expect(Project).toHaveBeenCalledWith(config);
+      expect(mockInitialize).toHaveBeenCalled();
+      
+      // Get the last instance created
+      const lastCall = Project.mock.calls.length - 1;
+      const instance = Project.mock.results[lastCall].value;
+      expect(instance.structureType).toBe('bedrock');
     });
 
     test('should cancel project creation when confirmation is rejected', async () => {
