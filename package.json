@@ -7,7 +7,10 @@
     "create-wordpress-starter": "./bin/cli.js"
   },
   "scripts": {
-    "start": "node ./bin/cli.js"
+    "start": "node ./bin/cli.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "wordpress",
@@ -23,6 +26,9 @@
     "commander": "^8.3.0",
     "figlet": "^1.5.2",
     "inquirer": "^8.2.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   },
   "engines": {
     "node": ">=12"

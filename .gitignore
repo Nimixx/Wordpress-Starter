@@ -21,4 +21,17 @@ Thumbs.db
 ehthumbs.db
 
 # Test directories
-test-project/ 
+test-project/
+
+# Coverage directory used by tools like istanbul
+coverage/
+.nyc_output/
+
+# Jest cache
+.jest/
+
+# Test temporary directories
+*-test-project/
+*-test-dir/
+existing-project/
+interactive-*/ 
