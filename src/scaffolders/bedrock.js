@@ -207,7 +207,8 @@ async function setupEnvFile(projectPath) {
   
   if (!setupEnvPrompt.setupEnv) {
     displayInfo('Skipping .env setup. You can manually configure it later.');
-    displayProjectCompletion(projectPath);
+    // Ask about Blade icons before completing
+    await setupBladeIcons(projectPath);
     return;
   }
   
@@ -219,7 +220,8 @@ async function setupEnvFile(projectPath) {
   
   if (!fs.existsSync(envExamplePath)) {
     displayWarning('.env.example file not found. Skipping .env setup.');
-    displayProjectCompletion(projectPath);
+    // Ask about Blade icons before completing
+    await setupBladeIcons(projectPath);
     return;
   }
   
@@ -321,8 +323,117 @@ async function setupEnvFile(projectPath) {
   console.log('\n');
   console.log(chalk.hex(catppuccin.green).bold('✅ .env file has been configured!'));
   
-  // Display project completion
-  displayProjectCompletion(projectPath);
+  // Ask about Blade icons before completing
+  await setupBladeIcons(projectPath);
+}
+
+/**
+ * Ask the user if they want to add Blade icons and which ones
+ * @param {string} projectPath - Path to the project directory
+ */
+async function setupBladeIcons(projectPath) {
+  createSectionHeader('Icons Setup');
+  
+  // Get the original current directory to return to it later
+  const originalDir = process.cwd();
+  
+  try {
+    // Ask if they want to add Blade icons
+    const addIconsPrompt = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'addIcons',
+        message: chalk.hex(catppuccin.sapphire)('🎨 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to add Blade icons to your project?'),
+        default: true
+      }
+    ]);
+    
+    if (!addIconsPrompt.addIcons) {
+      displayInfo('Skipping icon packages installation.');
+      displayProjectCompletion(projectPath);
+      return;
+    }
+    
+    // Ask which icon package(s) to install
+    const iconPackagePrompt = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'iconPackage',
+        message: chalk.hex(catppuccin.sapphire)('📦 ') + chalk.hex(catppuccin.sapphire).bold('Select an icon package to install:'),
+        choices: [
+          { name: '🔷 Lucide Icons', value: 'lucide' },
+          { name: '🔶 Heroicons', value: 'heroicons' },
+          { name: '💠 Fontawesome', value: 'fontawesome' },
+          { name: '🔘 Boxicons', value: 'boxicons' },
+          { name: '⚪ None/Skip', value: 'none' }
+        ],
+        default: 'lucide'
+      }
+    ]);
+    
+    if (iconPackagePrompt.iconPackage === 'none') {
+      displayInfo('Skipping icon package installation.');
+      displayProjectCompletion(projectPath);
+      return;
+    }
+    
+    // Change to the project directory to run composer
+    process.chdir(projectPath);
+    
+    // Install the selected package
+    displayProcessing(`Installing ${getIconPackageName(iconPackagePrompt.iconPackage)} icon package...`);
+    
+    try {
+      // Execute composer require for the package
+      const command = getComposerCommand(iconPackagePrompt.iconPackage);
+      execSync(command, { stdio: 'inherit' });
+      
+      console.log('\n');
+      console.log(chalk.hex(catppuccin.green).bold(`✅ ${getIconPackageName(iconPackagePrompt.iconPackage)} icons have been installed!`));
+      
+    } catch (error) {
+      displayWarning(`Error installing icon package: ${error.message}`);
+    }
+    
+    // Display project completion
+    displayProjectCompletion(projectPath);
+    
+  } finally {
+    // Change back to the original directory
+    process.chdir(originalDir);
+  }
+}
+
+/**
+ * Get the display name for the selected icon package
+ * @param {string} packageKey - The icon package key
+ * @returns {string} The display name
+ */
+function getIconPackageName(packageKey) {
+  const packageNames = {
+    'lucide': 'Lucide',
+    'heroicons': 'Heroicons',
+    'fontawesome': 'Font Awesome',
+    'boxicons': 'Boxicons'
+  };
+  
+  return packageNames[packageKey] || packageKey;
+}
+
+/**
+ * Get the composer command for the selected icon package
+ * @param {string} packageKey - The icon package key
+ * @returns {string} The composer command
+ */
+function getComposerCommand(packageKey) {
+  const commands = {
+    'lucide': 'composer require mallardduck/blade-lucide-icons',
+    'heroicons': 'composer require blade-ui-kit/blade-heroicons',
+    'fontawesome': 'composer require owenvoke/blade-fontawesome',
+    'boxicons': 'composer require andreiio/blade-boxicons'
+  };
+  
+  return commands[packageKey] || '';
 }
 
 /**

@@ -68,7 +68,6 @@ The CLI supports different folder structures for your WordPress projects:
 - Composer integration for Bedrock installations
 - Simple project initialization
 - Visual feedback during project creation
-- More features coming soon!
 
 ## Development
 
