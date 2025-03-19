@@ -267,6 +267,55 @@ class BedrockStructure extends Structure {
       envContent = envContent.replace(/WP_HOME=.*(\n|$)/g, `WP_HOME=${urlSettings.wpHome}\nWP_SITEURL=\${WP_HOME}/wp`);
     }
     
+    // Generate WordPress salts
+    displayProcessing('Generating WordPress security keys and salts...');
+    
+    // Generate random keys and salts
+    const generateRandomString = (length = 64) => {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_[]{}<>~`+=,.;:/?|';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    };
+    
+    const salts = {
+      'AUTH_KEY': generateRandomString(),
+      'SECURE_AUTH_KEY': generateRandomString(),
+      'LOGGED_IN_KEY': generateRandomString(),
+      'NONCE_KEY': generateRandomString(),
+      'AUTH_SALT': generateRandomString(),
+      'SECURE_AUTH_SALT': generateRandomString(),
+      'LOGGED_IN_SALT': generateRandomString(),
+      'NONCE_SALT': generateRandomString()
+    };
+    
+    // Check if .env already contains salts section
+    const saltKeysRegex = /(AUTH_KEY|SECURE_AUTH_KEY|LOGGED_IN_KEY|NONCE_KEY|AUTH_SALT|SECURE_AUTH_SALT|LOGGED_IN_SALT|NONCE_SALT)=/;
+    const hasSalts = saltKeysRegex.test(envContent);
+    
+    if (hasSalts) {
+      // Replace existing salts
+      Object.entries(salts).forEach(([key, value]) => {
+        const keyRegex = new RegExp(`${key}=.*`, 'g');
+        if (keyRegex.test(envContent)) {
+          envContent = envContent.replace(keyRegex, `${key}="${value}"`);
+        } else {
+          // If this key doesn't exist yet, add it to the end
+          envContent += `\n${key}="${value}"`;
+        }
+      });
+    } else {
+      // Add new salts section if none exists
+      let saltsSection = '\n# WordPress Security Keys and Salts\n';
+      Object.entries(salts).forEach(([key, value]) => {
+        saltsSection += `${key}="${value}"\n`;
+      });
+      
+      envContent += saltsSection;
+    }
+    
     // Write the .env file
     fs.writeFileSync(envPath, envContent);
     
@@ -282,6 +331,10 @@ class BedrockStructure extends Structure {
     console.log(chalk.hex(catppuccin.sapphire).bold('🌐 Site Configuration:'));
     console.log(chalk.hex(catppuccin.text)('    Site URL (WP_HOME): ') + chalk.hex(catppuccin.green)(urlSettings.wpHome));
     console.log(chalk.hex(catppuccin.text)('    Environment: ') + chalk.hex(catppuccin.green)('🛠️ ' + urlSettings.wpEnv.charAt(0).toUpperCase() + urlSettings.wpEnv.slice(1)));
+    
+    console.log('\n');
+    console.log(chalk.hex(catppuccin.red).bold('🔑 Security:'));
+    console.log(chalk.hex(catppuccin.text)('    WordPress salts and keys: ') + chalk.hex(catppuccin.green)('Generated successfully'));
     
     console.log('\n');
     console.log(chalk.hex(catppuccin.green).bold('✅ .env file has been configured!'));
