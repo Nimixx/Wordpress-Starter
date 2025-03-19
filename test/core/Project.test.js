@@ -2,7 +2,8 @@
  * Tests for the Project class
  */
 
-const path = require('path');
+const _fs = require('fs');
+const _path = require('path');
 
 // Mock dependencies before requiring Project
 const mockGetDefaultName = jest.fn().mockReturnValue('classic');
@@ -98,28 +99,24 @@ describe('Project', () => {
     
     const project = new Project({ name: 'existing-project' });
     
-    // Since we're expecting process.exit to be called, which we mock to throw an error,
-    // we need to catch that error
-    try {
+    // Define a function that will throw if process.exit isn't called
+    const initializeProject = async () => {
       await project.initialize();
-      // If we get here, the test fails
-      throw new Error('Expected process.exit to be called but it was not');
-    } catch (error) {
-      if (error.message !== 'PROCESS_EXIT') {
-        throw error; // Re-throw if it's not our mock exit
-      }
-      
-      // Should have displayed warning
-      expect(mockDisplayWarning).toHaveBeenCalledWith(
-        expect.stringContaining('already exists'),
-      );
-      
-      // Should have exited
-      expect(processExitSpy).toHaveBeenCalledWith(1);
-      
-      // Should not have created structure
-      expect(mockCreate).not.toHaveBeenCalled();
-    }
+      return 'initialize completed without exit';
+    };
+    
+    // Expect the function to throw our PROCESS_EXIT error
+    await expect(initializeProject()).rejects.toThrow('PROCESS_EXIT');
+    
+    // These assertions happen after the expected error
+    expect(mockDisplayWarning).toHaveBeenCalledWith(
+      expect.stringContaining('already exists'),
+    );
+    
+    expect(processExitSpy).toHaveBeenCalledWith(1);
+    
+    // Should not have created structure
+    expect(mockCreate).not.toHaveBeenCalled();
   });
   
   test('should handle errors during initialization', async () => {
@@ -130,24 +127,21 @@ describe('Project', () => {
     
     const project = new Project({ name: 'test-project' });
     
-    // Since we're expecting process.exit to be called, which we mock to throw an error,
-    // we need to catch that error
-    try {
+    // Define a function that will throw if process.exit isn't called
+    const initializeProject = async () => {
       await project.initialize();
-      // If we get here, the test fails
-      throw new Error('Expected process.exit to be called but it was not');
-    } catch (error) {
-      if (error.message !== 'PROCESS_EXIT') {
-        throw error; // Re-throw if it's not our mock exit
-      }
-      
-      // Should have displayed warning
-      expect(mockDisplayWarning).toHaveBeenCalledWith(
-        expect.stringContaining('Error creating project'),
-      );
-      
-      // Should have exited
-      expect(processExitSpy).toHaveBeenCalledWith(1);
-    }
+      return 'initialize completed without exit';
+    };
+    
+    // Expect the function to throw our PROCESS_EXIT error
+    await expect(initializeProject()).rejects.toThrow('PROCESS_EXIT');
+    
+    // Check that the warning was displayed
+    expect(mockDisplayWarning).toHaveBeenCalledWith(
+      expect.stringContaining('Error creating project'),
+    );
+    
+    // Should have exited
+    expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 }); 

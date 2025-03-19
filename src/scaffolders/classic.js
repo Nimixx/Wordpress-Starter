@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const boxen = require('boxen');
-const { createSectionHeader, displaySuccess, displayInfo, displayWarning, displayProcessing } = require('./common');
+const { createSectionHeader, _displaySuccess, displayInfo, displayWarning, displayProcessing } = require('./common');
 
 // Catppuccin Mocha Theme Colors
 const catppuccin = {

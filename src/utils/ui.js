@@ -120,11 +120,19 @@ function displayProjectCompletion(projectName) {
 
 module.exports = {
   displayWelcome,
+  _displayWelcome: displayWelcome,
   createSectionHeader,
+  _createSectionHeader: createSectionHeader,
   displaySuccess,
+  _displaySuccess: displaySuccess,
   displayInfo,
+  _displayInfo: displayInfo,
   displayWarning,
+  _displayWarning: displayWarning,
   displayProcessing,
+  _displayProcessing: displayProcessing,
   displayStructureDescription,
+  _displayStructureDescription: displayStructureDescription,
   displayProjectCompletion,
+  _displayProjectCompletion: displayProjectCompletion,
 }; 

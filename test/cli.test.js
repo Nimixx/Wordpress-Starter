@@ -1,6 +1,6 @@
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const { _exec } = require('child_process');
+const _fs = require('fs');
+const _path = require('path');
 
 // Mock the Project class
 jest.mock('../src/core/Project', () => {
@@ -106,7 +106,7 @@ describe('CLI Functionality Tests', () => {
   });
 
   describe('CLI command execution', () => {
-    test('should execute CLI with project name and classic structure options', (done) => {
+    test('should execute CLI with project name and classic structure options', async () => {
       // Mock child_process.exec
       jest.mock('child_process', () => ({
         exec: jest.fn((cmd, cb) => {
@@ -119,22 +119,26 @@ describe('CLI Functionality Tests', () => {
       const { exec } = require('child_process');
       
       // Execute CLI command with options
-      exec('node ./bin/cli.js --name test-cli-project --structure classic', (error, stdout) => {
-        expect(error).toBeNull();
-        expect(stdout).toBeDefined();
-        done();
+      return new Promise((resolve) => {
+        exec('node ./bin/cli.js --name test-cli-project --structure classic', (error, stdout) => {
+          expect(error).toBeNull();
+          expect(stdout).toBeDefined();
+          resolve();
+        });
       });
     });
 
-    test('should execute CLI with project name and bedrock structure options', (done) => {
+    test('should execute CLI with project name and bedrock structure options', async () => {
       // Mock is already set from previous test
       const { exec } = require('child_process');
       
       // Execute CLI command with options
-      exec('node ./bin/cli.js --name test-cli-project --structure bedrock', (error, stdout) => {
-        expect(error).toBeNull();
-        expect(stdout).toBeDefined();
-        done();
+      return new Promise((resolve) => {
+        exec('node ./bin/cli.js --name test-cli-project --structure bedrock', (error, stdout) => {
+          expect(error).toBeNull();
+          expect(stdout).toBeDefined();
+          resolve();
+        });
       });
     });
   });

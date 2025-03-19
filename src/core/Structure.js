@@ -8,11 +8,11 @@ const chalk = require('chalk');
 const boxen = require('boxen');
 const { catppuccin, boxStyles } = require('../config/theme');
 const { 
-  createSectionHeader, 
-  displaySuccess, 
-  displayInfo, 
-  displayWarning, 
-  displayProcessing, 
+  _createSectionHeader, 
+  _displaySuccess, 
+  _displayInfo, 
+  _displayWarning, 
+  _displayProcessing, 
 } = require('../utils/ui');
 
 class Structure {

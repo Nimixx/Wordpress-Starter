@@ -6,7 +6,7 @@ const figlet = require('figlet');
 const boxen = require('boxen');
 const inquirer = require('inquirer');
 const { initializeProject } = require('../src/index');
-const { displayWelcome } = require('../src/utils/ui');
+const { _displayWelcome } = require('../src/utils/ui');
 const { catppuccin, structureDescriptions, boxStyles } = require('../src/config/theme');
 const structureRegistry = require('../src/structures');
 

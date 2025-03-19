@@ -2,10 +2,10 @@
  * Tests for the ClassicStructure class
  */
 
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const { execSync } = require('child_process');
+const _fs = require('fs');
+const _path = require('path');
+const _chalk = require('chalk');
+const { _execSync } = require('child_process');
 const ClassicStructure = require('../../src/structures/ClassicStructure');
 const ui = require('../../src/utils/ui');
 

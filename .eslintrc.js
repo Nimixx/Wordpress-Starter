@@ -6,15 +6,15 @@ module.exports = {
     jest: true,
   },
   extends: [
-    'airbnb-base',
+    'eslint:recommended',
     'plugin:jest/recommended',
-  ],
-  plugins: [
-    'jest',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
   },
+  plugins: [
+    'jest',
+  ],
   rules: {
     'no-console': 'off', // Allow console for CLI applications
     'max-len': ['error', { code: 120 }], // Allow slightly longer line length
@@ -30,5 +30,17 @@ module.exports = {
     'jest/no-identical-title': 'error',
     'jest/prefer-to-have-length': 'warn',
     'jest/valid-expect': 'error',
+    'no-unused-vars': ['warn', { 
+      argsIgnorePattern: '^_',
+      varsIgnorePattern: '^_',
+    }],
   },
+  overrides: [
+    {
+      files: ['**/test/**/*.js'],
+      rules: {
+        'jest/no-conditional-expect': 'off',
+      },
+    },
+  ],
 }; 

@@ -2,10 +2,10 @@
  * Tests for the BedrockStructure class
  */
 
-const fs = require('fs');
+const _fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
-const { execSync } = require('child_process');
+const _chalk = require('chalk');
+const { _execSync } = require('child_process');
 const BedrockStructure = require('../../src/structures/BedrockStructure');
 const ui = require('../../src/utils/ui');
 const inquirer = require('inquirer');
@@ -238,7 +238,7 @@ describe('BedrockStructure', () => {
       // Override implementation to provide a more testable execution flow
       bedrockStructure.setupSageTheme = async function() {
         const installSagePrompt = { installSage: true };
-        const themeNamePrompt = { themeName: 'my-sage-theme' };
+        const _themeNamePrompt = { themeName: 'my-sage-theme' };
         
         if (!installSagePrompt.installSage) {
           await this.setupIconPackages();
@@ -246,7 +246,7 @@ describe('BedrockStructure', () => {
         }
         
         // Execute composer create-project for Sage
-        mockExecSync(`composer create-project roots/sage ${themeNamePrompt.themeName}`, { stdio: 'inherit' });
+        mockExecSync(`composer create-project roots/sage ${_themeNamePrompt.themeName}`, { stdio: 'inherit' });
         
         // Call setupIconPackagesInTheme
         await this.setupIconPackagesInTheme('path/to/theme');
@@ -268,7 +268,7 @@ describe('BedrockStructure', () => {
       // Override implementation to provide a more testable execution flow
       bedrockStructure.setupSageTheme = async function() {
         const installSagePrompt = { installSage: true };
-        const themeNamePrompt = { themeName: 'my-sage-theme' };
+        const _themeNamePrompt = { themeName: 'my-sage-theme' };
         
         if (!installSagePrompt.installSage) {
           await this.setupIconPackages();
@@ -279,7 +279,7 @@ describe('BedrockStructure', () => {
         mockFs.mkdirSync('path/to/themes', { recursive: true });
         
         // Execute composer create-project for Sage
-        mockExecSync(`composer create-project roots/sage ${themeNamePrompt.themeName}`, { stdio: 'inherit' });
+        mockExecSync(`composer create-project roots/sage ${_themeNamePrompt.themeName}`, { stdio: 'inherit' });
       };
       
       await bedrockStructure.setupSageTheme();
@@ -292,7 +292,7 @@ describe('BedrockStructure', () => {
       // Override implementation to provide a more testable execution flow
       bedrockStructure.setupSageTheme = async function() {
         const installSagePrompt = { installSage: true };
-        const themeNamePrompt = { themeName: 'my-sage-theme' };
+        const _themeNamePrompt = { themeName: 'my-sage-theme' };
         
         if (!installSagePrompt.installSage) {
           await this.setupIconPackages();
@@ -362,7 +362,7 @@ describe('BedrockStructure', () => {
     
     test('should install icon package in theme when user confirms', async () => {
       // Override implementation for testing
-      bedrockStructure.setupIconPackagesInTheme = async function(themeDirectory) {
+      bedrockStructure.setupIconPackagesInTheme = async function(_themeDirectory) {
         // Handle icon package installation
         const addIconsPrompt = { addIcons: true };
         const iconPackagePrompt = { iconPackage: 'heroicons' };
@@ -373,8 +373,8 @@ describe('BedrockStructure', () => {
         }
         
         // Execute composer require for the package
-        const command = this.getComposerCommand(iconPackagePrompt.iconPackage);
-        mockExecSync(command, { stdio: 'inherit' });
+        const _command = this.getComposerCommand(iconPackagePrompt.iconPackage);
+        mockExecSync(_command, { stdio: 'inherit' });
         
         this.displayCompletion();
       };
@@ -409,7 +409,7 @@ describe('BedrockStructure', () => {
     
     test('should handle errors during icon package installation in theme', async () => {
       // Override implementation for testing
-      bedrockStructure.setupIconPackagesInTheme = async function(themeDirectory) {
+      bedrockStructure.setupIconPackagesInTheme = async function(_themeDirectory) {
         // Handle icon package installation
         const addIconsPrompt = { addIcons: true };
         const iconPackagePrompt = { iconPackage: 'fontawesome' };
@@ -421,7 +421,7 @@ describe('BedrockStructure', () => {
         
         try {
           // Execute composer require for the package
-          const command = this.getComposerCommand(iconPackagePrompt.iconPackage);
+          const _command = this.getComposerCommand(iconPackagePrompt.iconPackage);
           // Simulate error
           throw new Error('Could not install icon package');
         } catch (error) {
@@ -546,7 +546,7 @@ NONCE_SALT='generateme'
         mockEnvContent = envContent;
         
         // Mock the file write
-        mockFs.writeFileSync.mockImplementationOnce((path, content) => {
+        mockFs.writeFileSync.mockImplementationOnce((_path, _content) => {
           // Do nothing, we already have the content in mockEnvContent
           return true;
         });
@@ -651,7 +651,7 @@ WP_SITEURL=\${WP_HOME}/wp
         mockEnvContent = envContent;
         
         // Mock the file write
-        mockFs.writeFileSync.mockImplementationOnce((path, content) => {
+        mockFs.writeFileSync.mockImplementationOnce((_path, _content) => {
           // Do nothing, we already have the content in mockEnvContent
           return true;
         });

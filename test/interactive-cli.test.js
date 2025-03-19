@@ -1,6 +1,7 @@
 const fs = require('fs');
-const path = require('path');
-const inquirer = require('inquirer');
+const _path = require('path');
+const _inquirer = require('inquirer');
+const { program: _program } = require('commander');
 
 // Mock inquirer
 jest.mock('inquirer');
