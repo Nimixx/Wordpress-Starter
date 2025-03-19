@@ -31,15 +31,15 @@ describe('Interactive CLI Tests', () => {
   beforeEach(() => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Mock console methods to silence output during tests
     jest.spyOn(console, 'log').mockImplementation(() => {});
-    
+
     // Mock fs methods using spyOn
     jest.spyOn(fs, 'existsSync').mockReturnValue(false);
     jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {});
     jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-    
+
     // Mock process.exit to prevent tests from exiting
     jest.spyOn(process, 'exit').mockImplementation(() => {});
   });
@@ -53,7 +53,7 @@ describe('Interactive CLI Tests', () => {
     test('should prompt for project name and structure when not provided', async () => {
       // This test is more focused on the CLI script, not initializeProject
       // For the purpose of testing, we'll simulate the CLI behavior
-      
+
       // Skip this test for now as it's testing CLI behavior, not initializeProject
       expect(true).toBe(true);
     });
@@ -65,12 +65,12 @@ describe('Interactive CLI Tests', () => {
         name: 'interactive-classic',
         structure: 'classic',
       };
-      
+
       await initializeProject(config);
-      
+
       expect(Project).toHaveBeenCalledWith(config);
       expect(mockInitialize).toHaveBeenCalled();
-      
+
       // Get the last instance created
       const lastCall = Project.mock.calls.length - 1;
       const instance = Project.mock.results[lastCall].value;
@@ -82,12 +82,12 @@ describe('Interactive CLI Tests', () => {
         name: 'interactive-bedrock',
         structure: 'bedrock',
       };
-      
+
       await initializeProject(config);
-      
+
       expect(Project).toHaveBeenCalledWith(config);
       expect(mockInitialize).toHaveBeenCalled();
-      
+
       // Get the last instance created
       const lastCall = Project.mock.calls.length - 1;
       const instance = Project.mock.results[lastCall].value;
@@ -106,4 +106,4 @@ describe('Interactive CLI Tests', () => {
       expect(true).toBe(true);
     });
   });
-}); 
+});

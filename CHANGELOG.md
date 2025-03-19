@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial project structure
 - Basic CLI interface with colorful styling
 - Project creation with name parameter
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic fallback to manual folder creation if Composer is unavailable
 
 ### Changed
+
 - Updated CLI to use interactive prompts instead of requiring command-line arguments
 - Updated documentation to reflect new interactive usage
 - Improved CLI behavior to display prompts immediately without showing help screen first
@@ -36,7 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2024-03-19
 
 ### Added
+
 - Initial release
 - Project scaffolding with named directory creation
 - Simple welcome message
-- Error handling for existing directories 
+- Error handling for existing directories

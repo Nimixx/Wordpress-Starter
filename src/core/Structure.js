@@ -7,12 +7,12 @@ const path = require('path');
 const chalk = require('chalk');
 const boxen = require('boxen');
 const { catppuccin, boxStyles } = require('../config/theme');
-const { 
-  _createSectionHeader, 
-  _displaySuccess, 
-  _displayInfo, 
-  _displayWarning, 
-  _displayProcessing, 
+const {
+  _createSectionHeader,
+  _displaySuccess,
+  _displayInfo,
+  _displayWarning,
+  _displayProcessing,
 } = require('../utils/ui');
 
 class Structure {
@@ -52,12 +52,12 @@ class Structure {
   createProjectDir(relativePath, { log = true } = {}) {
     const dirPath = path.join(this.projectPath, relativePath);
     fs.mkdirSync(dirPath, { recursive: true });
-    
+
     if (log) {
       const displayPath = path.relative(process.cwd(), dirPath);
       console.log(chalk.hex(catppuccin.green)(`  ✓ Created: ${displayPath}`));
     }
-    
+
     return dirPath;
   }
 
@@ -82,9 +82,11 @@ class Structure {
 WordPress project created with WordPress Starter using the ${structureType} structure.
 
 ## Structure
-${structureType === 'classic' 
-  ? 'Standard WordPress installation with the latest WordPress core.' 
-  : 'Modern WordPress stack with improved folder structure and security.'}
+${
+  structureType === 'classic'
+    ? 'Standard WordPress installation with the latest WordPress core.'
+    : 'Modern WordPress stack with improved folder structure and security.'
+}
 ${additionalContent}`;
 
     this.writeProjectFile('README.md', readmeContent);
@@ -98,10 +100,9 @@ ${additionalContent}`;
    */
   displayInfo(title, description, color = catppuccin.blue) {
     console.log('\n');
-    
+
     const infoBox = boxen(
-      chalk.hex(catppuccin.text).bold(`${title}\n\n`) +
-      chalk.hex(catppuccin.text)(description),
+      chalk.hex(catppuccin.text).bold(`${title}\n\n`) + chalk.hex(catppuccin.text)(description),
       {
         padding: 2,
         margin: 0,
@@ -110,7 +111,7 @@ ${additionalContent}`;
         float: 'left',
       },
     );
-    
+
     console.log(infoBox);
     console.log('\n');
   }
@@ -121,19 +122,17 @@ ${additionalContent}`;
   displayCompletion() {
     console.log('\n');
     console.log(chalk.hex(catppuccin.green).bold('✅ Project initialized successfully!'));
-    
+
     // Display next steps in a styled box
-    const nextStepsContent = 
+    const nextStepsContent =
       chalk.hex(catppuccin.yellow).bold('📝 Next steps:\n\n') +
       chalk.hex(catppuccin.text)(`1. cd ${this.projectName}\n`) +
       chalk.hex(catppuccin.text)(`2. Follow the instructions in the README.md file`);
-    
-    console.log(
-      boxen(nextStepsContent, boxStyles.nextSteps),
-    );
-    
+
+    console.log(boxen(nextStepsContent, boxStyles.nextSteps));
+
     console.log('\n');
   }
 }
 
-module.exports = Structure; 
+module.exports = Structure;

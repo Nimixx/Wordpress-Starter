@@ -13,4 +13,4 @@ structureRegistry.register('classic', ClassicStructure, { isDefault: true });
 structureRegistry.register('bedrock', BedrockStructure);
 
 // Export the registry
-module.exports = structureRegistry; 
+module.exports = structureRegistry;

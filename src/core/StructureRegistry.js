@@ -19,7 +19,7 @@ class StructureRegistry {
   register(name, StructureClass, { isDefault = false } = {}) {
     // eslint-disable-next-line no-param-reassign
     this.structures.set(name, StructureClass);
-    
+
     if (isDefault || !this.defaultStructure) {
       // eslint-disable-next-line no-param-reassign
       this.defaultStructure = name;
@@ -68,7 +68,7 @@ class StructureRegistry {
    */
   create(name, projectPath) {
     let structureName = name;
-    
+
     if (!this.has(structureName)) {
       const defaultName = this.getDefaultName();
       console.warn(`Structure "${structureName}" not found, using "${defaultName}" instead.`);
@@ -83,4 +83,4 @@ class StructureRegistry {
 // Create and export the global registry instance
 const structureRegistry = new StructureRegistry();
 
-module.exports = structureRegistry; 
+module.exports = structureRegistry;

@@ -28,14 +28,16 @@ function displayWelcome() {
   console.log('\n');
   console.log(chalk.hex(catppuccin.green).bold('✨ Welcome to WordPress Starter! ✨'));
   console.log('\n');
-  
+
   const welcomeBox = boxen(
-    chalk.hex(catppuccin.text)('This tool will help you scaffold a new WordPress project with a modern setup.\n\n') +
-    chalk.hex(catppuccin.sapphire).bold('Features:\n') +
-    chalk.hex(catppuccin.text)('• Interactive project setup\n') +
-    chalk.hex(catppuccin.text)('• Multiple folder structure options\n') +
-    chalk.hex(catppuccin.text)('• Automated WordPress installation\n') +
-    chalk.hex(catppuccin.text)('• Environment configuration'),
+    chalk.hex(catppuccin.text)(
+      'This tool will help you scaffold a new WordPress project with a modern setup.\n\n',
+    ) +
+      chalk.hex(catppuccin.sapphire).bold('Features:\n') +
+      chalk.hex(catppuccin.text)('• Interactive project setup\n') +
+      chalk.hex(catppuccin.text)('• Multiple folder structure options\n') +
+      chalk.hex(catppuccin.text)('• Automated WordPress installation\n') +
+      chalk.hex(catppuccin.text)('• Environment configuration'),
     {
       padding: 1,
       margin: { top: 0, bottom: 1, left: 0, right: 0 },
@@ -45,7 +47,7 @@ function displayWelcome() {
       backgroundColor: catppuccin.background,
     },
   );
-  
+
   console.log(welcomeBox);
   console.log('\n');
 }
@@ -57,7 +59,11 @@ function displayWelcome() {
 function createSectionHeader(title) {
   console.log('\n');
   console.log(chalk.hex(catppuccin.blue)('┌' + '─'.repeat(title.length + 8) + '┐'));
-  console.log(chalk.hex(catppuccin.blue)('│  ') + chalk.hex(catppuccin.blue).bold(title) + chalk.hex(catppuccin.blue)('  │'));
+  console.log(
+    chalk.hex(catppuccin.blue)('│  ') +
+      chalk.hex(catppuccin.blue).bold(title) +
+      chalk.hex(catppuccin.blue)('  │'),
+  );
   console.log(chalk.hex(catppuccin.blue)('└' + '─'.repeat(title.length + 8) + '┘'));
   console.log('\n');
 }
@@ -67,7 +73,9 @@ function createSectionHeader(title) {
  * @param {string} message - The success message
  */
 function displaySuccess(message) {
-  console.log('\n' + chalk.hex(catppuccin.green)('✅ ') + chalk.hex(catppuccin.green).bold(message) + '\n');
+  console.log(
+    '\n' + chalk.hex(catppuccin.green)('✅ ') + chalk.hex(catppuccin.green).bold(message) + '\n',
+  );
 }
 
 /**
@@ -75,7 +83,9 @@ function displaySuccess(message) {
  * @param {string} message - The info message
  */
 function displayInfo(message) {
-  console.log('\n' + chalk.hex(catppuccin.blue)('ℹ️  ') + chalk.hex(catppuccin.text)(message) + '\n');
+  console.log(
+    '\n' + chalk.hex(catppuccin.blue)('ℹ️  ') + chalk.hex(catppuccin.text)(message) + '\n',
+  );
 }
 
 /**
@@ -83,7 +93,9 @@ function displayInfo(message) {
  * @param {string} message - The warning message
  */
 function displayWarning(message) {
-  console.log('\n' + chalk.hex(catppuccin.yellow)('⚠️  ') + chalk.hex(catppuccin.yellow)(message) + '\n');
+  console.log(
+    '\n' + chalk.hex(catppuccin.yellow)('⚠️  ') + chalk.hex(catppuccin.yellow)(message) + '\n',
+  );
 }
 
 /**
@@ -91,7 +103,9 @@ function displayWarning(message) {
  * @param {string} message - The processing message
  */
 function displayProcessing(message) {
-  console.log('\n' + chalk.hex(catppuccin.teal)('⏳ ') + chalk.hex(catppuccin.teal)(message) + '\n');
+  console.log(
+    '\n' + chalk.hex(catppuccin.teal)('⏳ ') + chalk.hex(catppuccin.teal)(message) + '\n',
+  );
 }
 
 module.exports = {
@@ -101,4 +115,4 @@ module.exports = {
   displayInfo,
   displayWarning,
   displayProcessing,
-}; 
+};

@@ -10,10 +10,10 @@ jest.mock('../src/core/Project', () => {
       initialize: mockInitialize,
     };
   });
-  
+
   // Attach the mock.instances array to make the tests work
   ProjectMock.mockInitialize = mockInitialize;
-  
+
   return ProjectMock;
 });
 
@@ -44,10 +44,10 @@ describe('CLI Functionality Tests', () => {
   beforeEach(() => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Mock console methods to silence output during tests
     jest.spyOn(console, 'log').mockImplementation(() => {});
-    
+
     // Mock process.exit to prevent tests from exiting
     jest.spyOn(process, 'exit').mockImplementation(() => {});
   });
@@ -64,10 +64,10 @@ describe('CLI Functionality Tests', () => {
         name: 'test-project',
         structure: 'classic',
       };
-      
+
       // Act
       await initializeProject(config);
-      
+
       // Assert
       expect(Project).toHaveBeenCalledWith(config);
       expect(Project.mockInitialize).toHaveBeenCalled();
@@ -79,10 +79,10 @@ describe('CLI Functionality Tests', () => {
         name: 'test-project',
         structure: 'bedrock',
       };
-      
+
       // Act
       await initializeProject(config);
-      
+
       // Assert
       expect(Project).toHaveBeenCalledWith(config);
       expect(Project.mockInitialize).toHaveBeenCalled();
@@ -94,14 +94,16 @@ describe('CLI Functionality Tests', () => {
         name: 'test-project',
         structure: 'custom-structure',
       };
-      
+
       // Act
       await initializeProject(config);
-      
+
       // Assert
-      expect(Project).toHaveBeenCalledWith(expect.objectContaining({ 
-        structure: 'custom-structure', 
-      }));
+      expect(Project).toHaveBeenCalledWith(
+        expect.objectContaining({
+          structure: 'custom-structure',
+        }),
+      );
     });
   });
 
@@ -114,10 +116,10 @@ describe('CLI Functionality Tests', () => {
           return { kill: jest.fn() };
         }),
       }));
-      
+
       // Reimport exec with our mock
       const { exec } = require('child_process');
-      
+
       // Execute CLI command with options
       return new Promise((resolve) => {
         exec('node ./bin/cli.js --name test-cli-project --structure classic', (error, stdout) => {
@@ -131,7 +133,7 @@ describe('CLI Functionality Tests', () => {
     test('should execute CLI with project name and bedrock structure options', async () => {
       // Mock is already set from previous test
       const { exec } = require('child_process');
-      
+
       // Execute CLI command with options
       return new Promise((resolve) => {
         exec('node ./bin/cli.js --name test-cli-project --structure bedrock', (error, stdout) => {
@@ -142,4 +144,4 @@ describe('CLI Functionality Tests', () => {
       });
     });
   });
-}); 
+});

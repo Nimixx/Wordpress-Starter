@@ -4,7 +4,13 @@ const path = require('path');
 const { execSync } = require('child_process');
 const inquirer = require('inquirer');
 const boxen = require('boxen');
-const { createSectionHeader, displaySuccess, displayInfo, displayWarning, displayProcessing } = require('./common');
+const {
+  createSectionHeader,
+  displaySuccess,
+  displayInfo,
+  displayWarning,
+  displayProcessing,
+} = require('./common');
 
 // Catppuccin Mocha Theme Colors
 const catppuccin = {
@@ -31,17 +37,26 @@ const catppuccin = {
  */
 function displayBedrockInfo() {
   console.log('\n');
-  
+
   const bedrockBox = boxen(
     chalk.hex(catppuccin.text).bold('Bedrock WordPress Structure\n\n') +
-    chalk.hex(catppuccin.text)('Bedrock is a modern WordPress stack that helps you get started with the best tools and project structure for WordPress development. Bedrock includes the following features:\n\n') +
-    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Improved folder structure for better organization\n') +
-    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Dependency management with Composer\n') +
-    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Environment variables with dotenv\n') +
-    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Enhanced security practices\n') +
-    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Better WordPress configuration for multiple environments\n') +
-    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('WP directory installed in a subdirectory (wp/)\n') +
-    chalk.hex(catppuccin.peach)('• ') + chalk.hex(catppuccin.text)('Improved WordPress configuration for scalability'),
+      chalk.hex(catppuccin.text)(
+        'Bedrock is a modern WordPress stack that helps you get started with the best tools and project structure for WordPress development. Bedrock includes the following features:\n\n',
+      ) +
+      chalk.hex(catppuccin.peach)('• ') +
+      chalk.hex(catppuccin.text)('Improved folder structure for better organization\n') +
+      chalk.hex(catppuccin.peach)('• ') +
+      chalk.hex(catppuccin.text)('Dependency management with Composer\n') +
+      chalk.hex(catppuccin.peach)('• ') +
+      chalk.hex(catppuccin.text)('Environment variables with dotenv\n') +
+      chalk.hex(catppuccin.peach)('• ') +
+      chalk.hex(catppuccin.text)('Enhanced security practices\n') +
+      chalk.hex(catppuccin.peach)('• ') +
+      chalk.hex(catppuccin.text)('Better WordPress configuration for multiple environments\n') +
+      chalk.hex(catppuccin.peach)('• ') +
+      chalk.hex(catppuccin.text)('WP directory installed in a subdirectory (wp/)\n') +
+      chalk.hex(catppuccin.peach)('• ') +
+      chalk.hex(catppuccin.text)('Improved WordPress configuration for scalability'),
     {
       padding: 2,
       margin: 0,
@@ -50,7 +65,7 @@ function displayBedrockInfo() {
       float: 'left',
     },
   );
-  
+
   console.log(bedrockBox);
   console.log('\n');
 }
@@ -62,32 +77,34 @@ function displayBedrockInfo() {
 async function createBedrockStructure(projectPath) {
   // Display Bedrock information
   displayBedrockInfo();
-  
+
   try {
     // Check if Composer is installed
     try {
       execSync('composer --version', { stdio: 'ignore' });
     } catch (error) {
-      displayWarning('Composer is not installed or not in PATH. Falling back to manual folder creation.');
+      displayWarning(
+        'Composer is not installed or not in PATH. Falling back to manual folder creation.',
+      );
       await createBedrockStructureManually(projectPath);
       return;
     }
 
     displayInfo('Using Composer to set up Bedrock');
-    
+
     // Get the original current directory to return to it later
     const originalDir = process.cwd();
     const projectName = path.basename(projectPath);
-    
+
     try {
       // Use Composer to create a new Bedrock project
       createSectionHeader('Setting up Bedrock');
       displayProcessing('Creating Bedrock project with Composer...');
       execSync(`composer create-project roots/bedrock ${projectPath}`, { stdio: 'inherit' });
-      
+
       // Change to the project directory
       process.chdir(projectPath);
-      
+
       // Create a README with bedrock structure info (overwrite the one from Bedrock)
       const readmePath = path.join(projectPath, 'README.md');
       const readmeContent = `# ${projectName}
@@ -110,19 +127,19 @@ Modern WordPress stack with improved folder structure and security from Roots Be
 3. Access WordPress admin at \`http://example.com/wp/wp-admin/\`
 `;
       fs.writeFileSync(readmePath, readmeContent);
-      
+
       displaySuccess('Bedrock has been successfully set up!');
-      
+
       // Ask if the user wants to set up the .env file
       await setupEnvFile(projectPath);
-      
     } finally {
       // Change back to the original directory
       process.chdir(originalDir);
     }
-    
   } catch (error) {
-    displayWarning(`Error using Composer: ${error.message}. Falling back to manual folder creation.`);
+    displayWarning(
+      `Error using Composer: ${error.message}. Falling back to manual folder creation.`,
+    );
     await createBedrockStructureManually(projectPath);
   }
 }
@@ -133,11 +150,14 @@ Modern WordPress stack with improved folder structure and security from Roots Be
  */
 async function createBedrockStructureManually(projectPath) {
   createSectionHeader('Creating Manual Bedrock Structure');
-  
+
   // Create README with bedrock structure info
   const readmePath = path.join(projectPath, 'README.md');
-  fs.writeFileSync(readmePath, `# ${path.basename(projectPath)}\n\nWordPress project created with WordPress Starter using the Bedrock structure.\n\n## Structure\nModern WordPress stack with improved folder structure and security.\n`);
-  
+  fs.writeFileSync(
+    readmePath,
+    `# ${path.basename(projectPath)}\n\nWordPress project created with WordPress Starter using the Bedrock structure.\n\n## Structure\nModern WordPress stack with improved folder structure and security.\n`,
+  );
+
   // Create necessary directories for Bedrock structure
   const directories = [
     path.join(projectPath, 'web'),
@@ -148,43 +168,52 @@ async function createBedrockStructureManually(projectPath) {
     path.join(projectPath, 'config'),
     path.join(projectPath, 'config', 'environments'),
   ];
-  
+
   displayProcessing('Creating directory structure...');
-  
+
   directories.forEach((dir) => {
     fs.mkdirSync(dir, { recursive: true });
     console.log(chalk.hex(catppuccin.green)(`  ✓ Created: ${path.relative(process.cwd(), dir)}`));
   });
-  
+
   // Create a .env example file
   displayProcessing('Creating configuration files...');
   const envPath = path.join(projectPath, '.env.example');
-  fs.writeFileSync(envPath, `DB_NAME=database_name\nDB_USER=database_user\nDB_PASSWORD=database_password\n\nWP_ENV=development\nWP_HOME=http://example.com\nWP_SITEURL=\${WP_HOME}/wp\n`);
+  fs.writeFileSync(
+    envPath,
+    `DB_NAME=database_name\nDB_USER=database_user\nDB_PASSWORD=database_password\n\nWP_ENV=development\nWP_HOME=http://example.com\nWP_SITEURL=\${WP_HOME}/wp\n`,
+  );
   console.log(chalk.hex(catppuccin.green)('  ✓ Created: .env.example'));
-  
+
   // Create a basic composer.json file
   const composerPath = path.join(projectPath, 'composer.json');
-  const composerContent = JSON.stringify({
-    name: `my/${path.basename(projectPath)}`,
-    type: "project",
-    description: "WordPress project with Bedrock structure",
-    require: {
-      "php": ">=7.4",
-      "composer/installers": "^2.0",
-      "roots/wordpress": "^6.0",
-    },
-    config: {
-      "allow-plugins": {
-        "composer/installers": true,
+  const composerContent = JSON.stringify(
+    {
+      name: `my/${path.basename(projectPath)}`,
+      type: 'project',
+      description: 'WordPress project with Bedrock structure',
+      require: {
+        php: '>=7.4',
+        'composer/installers': '^2.0',
+        'roots/wordpress': '^6.0',
+      },
+      config: {
+        'allow-plugins': {
+          'composer/installers': true,
+        },
       },
     },
-  }, null, 2);
-  
+    null,
+    2,
+  );
+
   fs.writeFileSync(composerPath, composerContent);
   console.log(chalk.hex(catppuccin.green)('  ✓ Created: composer.json'));
-  
-  displayWarning('Composer wasn\'t used. You\'ll need to manually run composer install to complete the setup.');
-  
+
+  displayWarning(
+    "Composer wasn't used. You'll need to manually run composer install to complete the setup.",
+  );
+
   // Ask if the user wants to set up the .env file
   await setupEnvFile(projectPath);
 }
@@ -195,39 +224,43 @@ async function createBedrockStructureManually(projectPath) {
  */
 async function setupEnvFile(projectPath) {
   createSectionHeader('Environment Configuration');
-  
+
   const setupEnvPrompt = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'setupEnv',
-      message: chalk.hex(catppuccin.sapphire)('🔧 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to set up the .env file with database credentials?'),
+      message:
+        chalk.hex(catppuccin.sapphire)('🔧 ') +
+        chalk
+          .hex(catppuccin.sapphire)
+          .bold('Would you like to set up the .env file with database credentials?'),
       default: true,
     },
   ]);
-  
+
   if (!setupEnvPrompt.setupEnv) {
     displayInfo('Skipping .env setup. You can manually configure it later.');
     // Ask about Blade icons before completing
     await setupBladeIcons(projectPath);
     return;
   }
-  
+
   displayProcessing('Setting up .env file...');
-  
+
   // Check if .env.example exists
   const envExamplePath = path.join(projectPath, '.env.example');
   const envPath = path.join(projectPath, '.env');
-  
+
   if (!fs.existsSync(envExamplePath)) {
     displayWarning('.env.example file not found. Skipping .env setup.');
     // Ask about Blade icons before completing
     await setupBladeIcons(projectPath);
     return;
   }
-  
+
   // Get database credentials from user
   console.log(chalk.hex(catppuccin.sapphire).bold('\n🛢️  Database Configuration:\n'));
-  
+
   const dbCredentials = await inquirer.prompt([
     {
       type: 'input',
@@ -254,10 +287,10 @@ async function setupEnvFile(projectPath) {
       default: 'localhost',
     },
   ]);
-  
+
   // Get site URL settings
   console.log(chalk.hex(catppuccin.sapphire).bold('\n🌐 Site Configuration:\n'));
-  
+
   const urlSettings = await inquirer.prompt([
     {
       type: 'input',
@@ -277,52 +310,78 @@ async function setupEnvFile(projectPath) {
       default: 'development',
     },
   ]);
-  
+
   // Read the .env.example file
   const envExampleContent = fs.readFileSync(envExamplePath, 'utf8');
-  
+
   // Replace the placeholders with actual values
   let envContent = envExampleContent
     .replace(/DB_NAME=.*/g, `DB_NAME=${dbCredentials.dbName}`)
     .replace(/DB_USER=.*/g, `DB_USER=${dbCredentials.dbUser}`)
     .replace(/DB_PASSWORD=.*/g, `DB_PASSWORD=${dbCredentials.dbPassword}`);
-  
+
   // Add DB_HOST if not already in the template
   if (!envContent.includes('DB_HOST=')) {
-    envContent = envContent.replace(/DB_PASSWORD=.*(\n|$)/g, `DB_PASSWORD=${dbCredentials.dbPassword}\nDB_HOST=${dbCredentials.dbHost}`);
+    envContent = envContent.replace(
+      /DB_PASSWORD=.*(\n|$)/g,
+      `DB_PASSWORD=${dbCredentials.dbPassword}\nDB_HOST=${dbCredentials.dbHost}`,
+    );
   } else {
     envContent = envContent.replace(/DB_HOST=.*/g, `DB_HOST=${dbCredentials.dbHost}`);
   }
-  
+
   // Update environment and URL settings
   envContent = envContent
     .replace(/WP_ENV=.*/g, `WP_ENV=${urlSettings.wpEnv}`)
     .replace(/WP_HOME=.*/g, `WP_HOME=${urlSettings.wpHome}`);
-  
+
   // Ensure WP_SITEURL is set correctly
   if (!envContent.includes('WP_SITEURL=')) {
-    envContent = envContent.replace(/WP_HOME=.*(\n|$)/g, `WP_HOME=${urlSettings.wpHome}\nWP_SITEURL=\${WP_HOME}/wp`);
+    envContent = envContent.replace(
+      /WP_HOME=.*(\n|$)/g,
+      `WP_HOME=${urlSettings.wpHome}\nWP_SITEURL=\${WP_HOME}/wp`,
+    );
   }
-  
+
   // Write the .env file
   fs.writeFileSync(envPath, envContent);
-  
+
   // Display configuration summary
   console.log('\n');
   console.log(chalk.hex(catppuccin.mauve).bold('🛢️  Database Configuration:'));
-  console.log(chalk.hex(catppuccin.text)('    Database name: ') + chalk.hex(catppuccin.green)(dbCredentials.dbName));
-  console.log(chalk.hex(catppuccin.text)('    Database user: ') + chalk.hex(catppuccin.green)(dbCredentials.dbUser));
-  console.log(chalk.hex(catppuccin.text)('    Database password: ') + chalk.hex(catppuccin.green)(dbCredentials.dbPassword || '[empty]'));
-  console.log(chalk.hex(catppuccin.text)('    Database host: ') + chalk.hex(catppuccin.green)(dbCredentials.dbHost));
-  
+  console.log(
+    chalk.hex(catppuccin.text)('    Database name: ') +
+      chalk.hex(catppuccin.green)(dbCredentials.dbName),
+  );
+  console.log(
+    chalk.hex(catppuccin.text)('    Database user: ') +
+      chalk.hex(catppuccin.green)(dbCredentials.dbUser),
+  );
+  console.log(
+    chalk.hex(catppuccin.text)('    Database password: ') +
+      chalk.hex(catppuccin.green)(dbCredentials.dbPassword || '[empty]'),
+  );
+  console.log(
+    chalk.hex(catppuccin.text)('    Database host: ') +
+      chalk.hex(catppuccin.green)(dbCredentials.dbHost),
+  );
+
   console.log('\n');
   console.log(chalk.hex(catppuccin.sapphire).bold('🌐 Site Configuration:'));
-  console.log(chalk.hex(catppuccin.text)('    Site URL (WP_HOME): ') + chalk.hex(catppuccin.green)(urlSettings.wpHome));
-  console.log(chalk.hex(catppuccin.text)('    Environment: ') + chalk.hex(catppuccin.green)('🛠️ ' + urlSettings.wpEnv.charAt(0).toUpperCase() + urlSettings.wpEnv.slice(1)));
-  
+  console.log(
+    chalk.hex(catppuccin.text)('    Site URL (WP_HOME): ') +
+      chalk.hex(catppuccin.green)(urlSettings.wpHome),
+  );
+  console.log(
+    chalk.hex(catppuccin.text)('    Environment: ') +
+      chalk.hex(catppuccin.green)(
+        '🛠️ ' + urlSettings.wpEnv.charAt(0).toUpperCase() + urlSettings.wpEnv.slice(1),
+      ),
+  );
+
   console.log('\n');
   console.log(chalk.hex(catppuccin.green).bold('✅ .env file has been configured!'));
-  
+
   // Ask about Blade icons before completing
   await setupBladeIcons(projectPath);
 }
@@ -333,33 +392,37 @@ async function setupEnvFile(projectPath) {
  */
 async function setupBladeIcons(projectPath) {
   createSectionHeader('Icons Setup');
-  
+
   // Get the original current directory to return to it later
   const originalDir = process.cwd();
-  
+
   try {
     // Ask if they want to add Blade icons
     const addIconsPrompt = await inquirer.prompt([
       {
         type: 'confirm',
         name: 'addIcons',
-        message: chalk.hex(catppuccin.sapphire)('🎨 ') + chalk.hex(catppuccin.sapphire).bold('Would you like to add Blade icons to your project?'),
+        message:
+          chalk.hex(catppuccin.sapphire)('🎨 ') +
+          chalk.hex(catppuccin.sapphire).bold('Would you like to add Blade icons to your project?'),
         default: true,
       },
     ]);
-    
+
     if (!addIconsPrompt.addIcons) {
       displayInfo('Skipping icon packages installation.');
       displayProjectCompletion(projectPath);
       return;
     }
-    
+
     // Ask which icon package(s) to install
     const iconPackagePrompt = await inquirer.prompt([
       {
         type: 'list',
         name: 'iconPackage',
-        message: chalk.hex(catppuccin.sapphire)('📦 ') + chalk.hex(catppuccin.sapphire).bold('Select an icon package to install:'),
+        message:
+          chalk.hex(catppuccin.sapphire)('📦 ') +
+          chalk.hex(catppuccin.sapphire).bold('Select an icon package to install:'),
         choices: [
           { name: '🔷 Lucide Icons', value: 'lucide' },
           { name: '🔶 Heroicons', value: 'heroicons' },
@@ -370,34 +433,40 @@ async function setupBladeIcons(projectPath) {
         default: 'lucide',
       },
     ]);
-    
+
     if (iconPackagePrompt.iconPackage === 'none') {
       displayInfo('Skipping icon package installation.');
       displayProjectCompletion(projectPath);
       return;
     }
-    
+
     // Change to the project directory to run composer
     process.chdir(projectPath);
-    
+
     // Install the selected package
-    displayProcessing(`Installing ${getIconPackageName(iconPackagePrompt.iconPackage)} icon package...`);
-    
+    displayProcessing(
+      `Installing ${getIconPackageName(iconPackagePrompt.iconPackage)} icon package...`,
+    );
+
     try {
       // Execute composer require for the package
       const command = getComposerCommand(iconPackagePrompt.iconPackage);
       execSync(command, { stdio: 'inherit' });
-      
+
       console.log('\n');
-      console.log(chalk.hex(catppuccin.green).bold(`✅ ${getIconPackageName(iconPackagePrompt.iconPackage)} icons have been installed!`));
-      
+      console.log(
+        chalk
+          .hex(catppuccin.green)
+          .bold(
+            `✅ ${getIconPackageName(iconPackagePrompt.iconPackage)} icons have been installed!`,
+          ),
+      );
     } catch (error) {
       displayWarning(`Error installing icon package: ${error.message}`);
     }
-    
+
     // Display project completion
     displayProjectCompletion(projectPath);
-    
   } finally {
     // Change back to the original directory
     process.chdir(originalDir);
@@ -411,12 +480,12 @@ async function setupBladeIcons(projectPath) {
  */
 function getIconPackageName(packageKey) {
   const packageNames = {
-    'lucide': 'Lucide',
-    'heroicons': 'Heroicons',
-    'fontawesome': 'Font Awesome',
-    'boxicons': 'Boxicons',
+    lucide: 'Lucide',
+    heroicons: 'Heroicons',
+    fontawesome: 'Font Awesome',
+    boxicons: 'Boxicons',
   };
-  
+
   return packageNames[packageKey] || packageKey;
 }
 
@@ -427,12 +496,12 @@ function getIconPackageName(packageKey) {
  */
 function getComposerCommand(packageKey) {
   const commands = {
-    'lucide': 'composer require mallardduck/blade-lucide-icons',
-    'heroicons': 'composer require blade-ui-kit/blade-heroicons',
-    'fontawesome': 'composer require owenvoke/blade-fontawesome',
-    'boxicons': 'composer require andreiio/blade-boxicons',
+    lucide: 'composer require mallardduck/blade-lucide-icons',
+    heroicons: 'composer require blade-ui-kit/blade-heroicons',
+    fontawesome: 'composer require owenvoke/blade-fontawesome',
+    boxicons: 'composer require andreiio/blade-boxicons',
   };
-  
+
   return commands[packageKey] || '';
 }
 
@@ -442,16 +511,16 @@ function getComposerCommand(packageKey) {
  */
 function displayProjectCompletion(projectPath) {
   const projectName = path.basename(projectPath);
-  
+
   console.log('\n');
   console.log(chalk.hex(catppuccin.green).bold('✅ Project initialized successfully!'));
-  
+
   // Display next steps in a styled box
-  const nextStepsContent = 
+  const nextStepsContent =
     chalk.hex(catppuccin.yellow).bold('📝 Next steps:\n\n') +
     chalk.hex(catppuccin.text)(`1. cd ${projectName}\n`) +
     chalk.hex(catppuccin.text)(`2. Follow the instructions in the README.md file`);
-  
+
   console.log(
     boxen(nextStepsContent, {
       padding: { top: 1, right: 2, bottom: 1, left: 2 },
@@ -462,10 +531,10 @@ function displayProjectCompletion(projectPath) {
       float: 'left',
     }),
   );
-  
+
   console.log('\n');
 }
 
 module.exports = {
   createBedrockStructure,
-}; 
+};

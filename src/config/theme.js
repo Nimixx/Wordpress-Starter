@@ -87,4 +87,4 @@ module.exports = {
   catppuccin,
   structureDescriptions,
   boxStyles,
-}; 
+};

@@ -42,6 +42,7 @@ This will create a new directory with your specified name in the current locatio
 The CLI supports different folder structures for your WordPress projects:
 
 1. **Classic WordPress Structure**
+
    - Traditional WordPress installation structure
    - Automatically downloads the latest WordPress core using WP-CLI
    - Creates a basic wp-config.php file with placeholder database values
@@ -87,4 +88,4 @@ npm start
 
 ## License
 
-MIT 
+MIT

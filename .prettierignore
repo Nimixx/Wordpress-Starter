@@ -1,0 +1,24 @@
+# Dependencies
+node_modules
+package-lock.json
+
+# Build files
+dist
+build
+coverage
+
+# Generated output
+.nyc_output
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db 
