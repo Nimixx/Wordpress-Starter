@@ -3,6 +3,9 @@ node_modules/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Optional npm cache directory
 .npm
@@ -15,13 +18,36 @@ yarn-error.log
 
 # macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
 
 # Windows
 Thumbs.db
 ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Test directories
 test-project/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Coverage directory used by tools like istanbul
 coverage/
@@ -34,4 +60,25 @@ coverage/
 *-test-project/
 *-test-dir/
 existing-project/
-interactive-*/ 
+interactive-*/
+
+# Logs
+logs
+*.log
+lerna-debug.log*
+
+# Dist / build directories
+dist/
+build/
+out/
+.next/
+
+# Wordpress specific
+wp-config.php
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/cache/
+wp-content/backups/
+wp-admin/
+wp-includes/
