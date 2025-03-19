@@ -49,14 +49,15 @@ The CLI supports different folder structures for your WordPress projects:
 
 2. **Bedrock Structure**
    - Modern WordPress stack with improved security and organization
-   - Uses a more structured approach with separated web and app directories
-   - Includes configuration files and environment separation
-   - Ready for modern development workflows
+   - Uses Composer to install the latest version of Roots Bedrock
+   - Includes complete WordPress installation with proper dependency management
+   - Provides enhanced security with separated web root and configuration files
+   - Falls back to creating only the directory structure if Composer is not available
 
 ## Prerequisites
 
 - **For Classic Structure with WordPress Core**: [WP-CLI](https://wp-cli.org/) should be installed and accessible in your PATH
-- **For Bedrock Structure**: [Composer](https://getcomposer.org/) is recommended for dependency management (not installed automatically)
+- **For Bedrock Structure**: [Composer](https://getcomposer.org/) should be installed and accessible in your PATH
 
 ## Features
 
@@ -64,6 +65,7 @@ The CLI supports different folder structures for your WordPress projects:
 - Interactive prompts for project configuration
 - Multiple folder structure options
 - WP-CLI integration for WordPress core downloads
+- Composer integration for Bedrock installations
 - Simple project initialization
 - Visual feedback during project creation
 - More features coming soon!

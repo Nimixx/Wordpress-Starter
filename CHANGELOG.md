@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implementation of different folder structures based on selection
 - Integration with WP-CLI for scaffolding classic WordPress installations
 - Automatic fallback to manual folder creation if WP-CLI is unavailable
+- Integration with Composer for scaffolding Bedrock-based WordPress installations
+- Automatic fallback to manual folder creation if Composer is unavailable
 
 ### Changed
 - Updated CLI to use interactive prompts instead of requiring command-line arguments
@@ -29,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reorganized code structure for better maintainability
 - Enhanced project initialization to set up appropriate folder structure based on selection
 - Improved classic WordPress setup to use WP-CLI for downloading the latest WordPress core
+- Improved Bedrock setup to use Composer for downloading and installing the latest Bedrock version
 
 ## [0.1.0] - 2024-03-19
 
