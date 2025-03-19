@@ -6,6 +6,7 @@ const figlet = require('figlet');
 const boxen = require('boxen');
 const inquirer = require('inquirer');
 const { initializeProject } = require('../src/index');
+const { displayWelcome } = require('../src/scaffolders/common');
 
 // Function to display the header
 function displayHeader() {
