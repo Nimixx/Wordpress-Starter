@@ -15,15 +15,34 @@ const structureRegistry = require('../src/structures');
  */
 function displayHeader() {
   console.log('\n');
-  console.log(
-    chalk.hex(catppuccin.mauve)(
-      figlet.textSync('WordPress Starter', {
-        font: 'Standard',
-        horizontalLayout: 'default',
-        verticalLayout: 'default',
-      }),
-    ),
-  );
+
+  // Generate the figlet text
+  const figletText = figlet.textSync('WordPress Starter', {
+    font: 'Standard',
+    horizontalLayout: 'default',
+    verticalLayout: 'default',
+  });
+
+  // Split the figlet text into lines
+  const lines = figletText.split('\n');
+
+  // Create a gradient effect using catppuccin colors
+  const gradientColors = [
+    catppuccin.mauve,
+    catppuccin.pink,
+    catppuccin.sapphire,
+    catppuccin.lavender,
+    catppuccin.blue,
+    catppuccin.sky,
+  ];
+
+  // Apply gradient to each line
+  lines.forEach((line, index) => {
+    // Calculate color for this line
+    const colorIndex = index % gradientColors.length;
+    console.log(chalk.hex(gradientColors[colorIndex])(line));
+  });
+
   console.log('\n');
 
   // Display a description box

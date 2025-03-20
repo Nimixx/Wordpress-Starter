@@ -11,7 +11,28 @@ const { catppuccin, boxStyles } = require('../config/theme');
  */
 function displayWelcome() {
   console.log('\n');
-  console.log(chalk.hex(catppuccin.green).bold('✨ Welcome to WordPress Starter! ✨'));
+
+  // Create a gradient welcome message
+  const welcomeText = '✨ Welcome to WordPress Starter! ✨';
+  const coloredText = welcomeText
+    .split('')
+    .map((char, i) => {
+      // Create a rainbow-like effect using catppuccin colors
+      const colors = [
+        catppuccin.green,
+        catppuccin.teal,
+        catppuccin.blue,
+        catppuccin.sapphire,
+        catppuccin.lavender,
+        catppuccin.mauve,
+        catppuccin.pink,
+      ];
+      const colorIndex = i % colors.length;
+      return chalk.hex(colors[colorIndex]).bold(char);
+    })
+    .join('');
+
+  console.log(coloredText);
   console.log('\n');
 
   const welcomeBox = boxen(
