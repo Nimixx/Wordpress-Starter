@@ -50,7 +50,9 @@ function displayHeader() {
     boxen(
       chalk.hex(catppuccin.text).bold('A modern WordPress project scaffolding tool\n\n') +
         chalk.hex(catppuccin.text)('Easily setup WordPress projects with custom configurations') +
-        chalk.hex(catppuccin.lavender)('\n\nVersion: 0.1.0'),
+        chalk.hex(catppuccin.lavender)('\n\nVersion: 0.1.0') +
+        chalk.hex(catppuccin.mauve)('\nAuthor: Nimixx') +
+        chalk.hex(catppuccin.blue)('\nGitHub: https://github.com/Nimixx/wordpress-starter'),
       boxStyles.default,
     ),
   );
