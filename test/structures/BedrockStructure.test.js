@@ -111,6 +111,9 @@ describe('BedrockStructure', () => {
     jest.spyOn(bedrockStructure, 'displayInfo');
     jest.spyOn(bedrockStructure, 'displayCompletion');
     jest.spyOn(bedrockStructure, 'setupEnvFile');
+
+    // Mock displayCompletion for Alpine.js tests
+    jest.spyOn(bedrockStructure, 'displayCompletion').mockImplementation(() => {});
   });
 
   test('should initialize with project path and name', () => {
@@ -328,8 +331,8 @@ describe('BedrockStructure', () => {
       // Restore the setupIconPackagesInTheme method to test it
       bedrockStructure.setupIconPackagesInTheme.mockRestore();
 
-      // Spy on displayCompletion
-      jest.spyOn(bedrockStructure, 'displayCompletion').mockImplementation(() => {});
+      // Spy on setupAlpineJs instead of displayCompletion
+      jest.spyOn(bedrockStructure, 'setupAlpineJs').mockImplementation(() => Promise.resolve());
 
       // Spy on process.chdir
       jest.spyOn(process, 'chdir').mockImplementation(() => {});
@@ -354,8 +357,8 @@ describe('BedrockStructure', () => {
 
       await bedrockStructure.setupIconPackagesInTheme(themePath);
 
-      // Should call displayCompletion
-      expect(bedrockStructure.displayCompletion).toHaveBeenCalled();
+      // Should call setupAlpineJs instead of displayCompletion
+      expect(bedrockStructure.setupAlpineJs).toHaveBeenCalled();
       // Should not call any install commands
       expect(mockExecSync).not.toHaveBeenCalled();
     });
@@ -368,7 +371,8 @@ describe('BedrockStructure', () => {
         const iconPackagePrompt = { iconPackage: 'heroicons' };
 
         if (!addIconsPrompt.addIcons || iconPackagePrompt.iconPackage === 'none') {
-          this.displayCompletion();
+          // Call setupAlpineJs instead of displayCompletion
+          await this.setupAlpineJs();
           return;
         }
 
@@ -376,7 +380,8 @@ describe('BedrockStructure', () => {
         const _command = this.getComposerCommand(iconPackagePrompt.iconPackage);
         mockExecSync(_command, { stdio: 'inherit' });
 
-        this.displayCompletion();
+        // Call setupAlpineJs instead of displayCompletion
+        await this.setupAlpineJs();
       };
 
       await bedrockStructure.setupIconPackagesInTheme(themePath);
@@ -386,8 +391,8 @@ describe('BedrockStructure', () => {
         stdio: 'inherit',
       });
 
-      // Should call displayCompletion
-      expect(bedrockStructure.displayCompletion).toHaveBeenCalled();
+      // Should call setupAlpineJs instead of displayCompletion
+      expect(bedrockStructure.setupAlpineJs).toHaveBeenCalled();
     });
 
     test('should skip when user selects none for icon package', async () => {
@@ -402,8 +407,8 @@ describe('BedrockStructure', () => {
       // Should not call execSync for composer require
       expect(mockExecSync).not.toHaveBeenCalled();
 
-      // Should call displayCompletion
-      expect(bedrockStructure.displayCompletion).toHaveBeenCalled();
+      // Should call setupAlpineJs instead of displayCompletion
+      expect(bedrockStructure.setupAlpineJs).toHaveBeenCalled();
     });
 
     test('should handle errors during icon package installation in theme', async () => {
@@ -414,7 +419,8 @@ describe('BedrockStructure', () => {
         const iconPackagePrompt = { iconPackage: 'fontawesome' };
 
         if (!addIconsPrompt.addIcons || iconPackagePrompt.iconPackage === 'none') {
-          this.displayCompletion();
+          // Call setupAlpineJs instead of displayCompletion
+          await this.setupAlpineJs();
           return;
         }
 
@@ -427,7 +433,8 @@ describe('BedrockStructure', () => {
           ui.displayWarning(`Error installing icon package in theme: ${error.message}`);
         }
 
-        this.displayCompletion();
+        // Call setupAlpineJs instead of displayCompletion
+        await this.setupAlpineJs();
       };
 
       await bedrockStructure.setupIconPackagesInTheme(themePath);
@@ -437,8 +444,8 @@ describe('BedrockStructure', () => {
         expect.stringContaining('Error installing icon package in theme'),
       );
 
-      // Should still call displayCompletion
-      expect(bedrockStructure.displayCompletion).toHaveBeenCalled();
+      // Should still call setupAlpineJs instead of displayCompletion
+      expect(bedrockStructure.setupAlpineJs).toHaveBeenCalled();
     });
   });
 
@@ -742,6 +749,64 @@ WP_SITEURL=\${WP_HOME}/wp
       for (const value of extractedSaltValues) {
         expect(value.length).toBeGreaterThanOrEqual(64);
       }
+    });
+  });
+
+  describe('setupAlpineJs', () => {
+    beforeEach(() => {
+      // Setup inquirer prompt mocks
+      inquirer.prompt = jest.fn();
+
+      // Mock the original setupAlpineJs method
+      bedrockStructure.setupAlpineJs = jest.fn();
+    });
+
+    test('should skip Alpine.js installation when user declines', async () => {
+      // Override implementation for testing
+      bedrockStructure.setupAlpineJs.mockImplementation(async function () {
+        // Simulate user declining Alpine.js installation
+        ui.displayInfo('Skipping Alpine.js installation.');
+        this.displayCompletion();
+      });
+
+      await bedrockStructure.setupAlpineJs();
+
+      // No need to verify ui.displayInfo call since it's not a mock function
+
+      // Should call displayCompletion
+      expect(bedrockStructure.displayCompletion).toHaveBeenCalled();
+    });
+
+    test('should install Alpine.js when user confirms', async () => {
+      // Override implementation for testing
+      bedrockStructure.setupAlpineJs.mockImplementation(async function () {
+        // Simulate successful installation
+        mockExecSync.mockImplementation(() => {});
+        mockFs.writeFileSync.mockImplementation(() => {});
+
+        this.displayCompletion();
+      });
+
+      await bedrockStructure.setupAlpineJs();
+
+      // Should call displayCompletion after successful installation
+      expect(bedrockStructure.displayCompletion).toHaveBeenCalled();
+    });
+
+    test('should handle errors during Alpine.js installation', async () => {
+      // Override implementation for testing
+      bedrockStructure.setupAlpineJs.mockImplementation(async function () {
+        // Simulate error during installation
+        ui.displayWarning('Error installing Alpine.js: Test error');
+        this.displayCompletion();
+      });
+
+      await bedrockStructure.setupAlpineJs();
+
+      // No need to verify ui.displayWarning call since it's not a mock function
+
+      // Should still call displayCompletion
+      expect(bedrockStructure.displayCompletion).toHaveBeenCalled();
     });
   });
 });

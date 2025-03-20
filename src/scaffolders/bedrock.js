@@ -411,7 +411,8 @@ async function setupBladeIcons(projectPath) {
 
     if (!addIconsPrompt.addIcons) {
       displayInfo('Skipping icon packages installation.');
-      displayProjectCompletion(projectPath);
+      // Call Alpine.js setup before completing
+      await setupAlpineJs(projectPath);
       return;
     }
 
@@ -436,7 +437,8 @@ async function setupBladeIcons(projectPath) {
 
     if (iconPackagePrompt.iconPackage === 'none') {
       displayInfo('Skipping icon package installation.');
-      displayProjectCompletion(projectPath);
+      // Call Alpine.js setup before completing
+      await setupAlpineJs(projectPath);
       return;
     }
 
@@ -463,6 +465,142 @@ async function setupBladeIcons(projectPath) {
       );
     } catch (error) {
       displayWarning(`Error installing icon package: ${error.message}`);
+    }
+
+    // Call Alpine.js setup before completing
+    await setupAlpineJs(projectPath);
+  } finally {
+    // Change back to the original directory
+    process.chdir(originalDir);
+  }
+}
+
+/**
+ * Ask the user if they want to add Alpine.js to their project
+ * @param {string} projectPath - Path to the project directory
+ */
+async function setupAlpineJs(projectPath) {
+  createSectionHeader('Alpine.js Setup');
+
+  // Get the original current directory to return to it later
+  const originalDir = process.cwd();
+
+  try {
+    // Ask if they want to add Alpine.js
+    const addAlpinePrompt = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'addAlpine',
+        message:
+          chalk.hex(catppuccin.mauve)('🏔️ ') +
+          chalk.hex(catppuccin.mauve).bold('Would you like to add Alpine.js to your project?'),
+        default: true,
+      },
+    ]);
+
+    if (!addAlpinePrompt.addAlpine) {
+      displayInfo('Skipping Alpine.js installation.');
+      displayProjectCompletion(projectPath);
+      return;
+    }
+
+    // Change to the project directory to run npm
+    process.chdir(projectPath);
+
+    // Check if package.json exists, if not, create it
+    const packageJsonPath = path.join(projectPath, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+      displayProcessing('Initializing npm project...');
+      execSync('npm init -y', { stdio: 'inherit' });
+    }
+
+    // Install Alpine.js
+    displayProcessing('Installing Alpine.js...');
+
+    try {
+      execSync('npm install alpinejs --save', { stdio: 'inherit' });
+
+      // Check if there's a theme directory
+      const themesPath = path.join(projectPath, 'web', 'app', 'themes');
+      if (fs.existsSync(themesPath)) {
+        // Get a list of theme directories (excluding hidden files)
+        const themeDirectories = fs
+          .readdirSync(themesPath)
+          .filter(
+            (item) =>
+              !item.startsWith('.') && fs.statSync(path.join(themesPath, item)).isDirectory(),
+          );
+
+        if (themeDirectories.length > 0) {
+          // Use the first theme found
+          const themeName = themeDirectories[0];
+          const themeJsDir = path.join(themesPath, themeName, 'resources', 'js');
+
+          // Create js directory if it doesn't exist
+          if (!fs.existsSync(themeJsDir)) {
+            fs.mkdirSync(themeJsDir, { recursive: true });
+          }
+
+          // Create or update app.js with Alpine.js import
+          const appJsPath = path.join(themeJsDir, 'app.js');
+          let appJsContent = '';
+
+          if (fs.existsSync(appJsPath)) {
+            // Read existing content
+            appJsContent = fs.readFileSync(appJsPath, 'utf8');
+
+            // Add Alpine.js import if it doesn't exist
+            if (!appJsContent.includes('alpinejs')) {
+              appJsContent = `import Alpine from 'alpinejs';\nwindow.Alpine = Alpine;\nAlpine.start();\n\n${appJsContent}`;
+            }
+          } else {
+            // Create new app.js with Alpine.js initialization
+            appJsContent = `// Import Alpine.js
+import Alpine from 'alpinejs';
+
+// Make Alpine available globally
+window.Alpine = Alpine;
+
+// Initialize Alpine
+Alpine.start();
+`;
+          }
+
+          // Write the updated content
+          fs.writeFileSync(appJsPath, appJsContent);
+
+          console.log('\n');
+          console.log(
+            chalk
+              .hex(catppuccin.green)
+              .bold(`✅ Alpine.js has been installed and initialized in ${themeName} theme!`),
+          );
+        } else {
+          // No theme found, just notify about installation
+          console.log('\n');
+          console.log(chalk.hex(catppuccin.green).bold('✅ Alpine.js has been installed!'));
+          console.log(
+            chalk
+              .hex(catppuccin.yellow)
+              .bold(
+                '⚠️ No theme directory found. You will need to initialize Alpine.js manually in your JavaScript files.',
+              ),
+          );
+        }
+      } else {
+        // No themes directory, just notify about installation
+        console.log('\n');
+        console.log(chalk.hex(catppuccin.green).bold('✅ Alpine.js has been installed!'));
+        console.log(
+          chalk
+            .hex(catppuccin.yellow)
+            .bold(
+              '⚠️ No theme directory found. You will need to initialize Alpine.js manually in your JavaScript files.',
+            ),
+        );
+      }
+    } catch (error) {
+      displayWarning(`Error installing Alpine.js: ${error.message}`);
     }
 
     // Display project completion
@@ -537,4 +675,6 @@ function displayProjectCompletion(projectPath) {
 
 module.exports = {
   createBedrockStructure,
+  setupAlpineJs,
+  setupBladeIcons,
 };
